@@ -23,9 +23,9 @@ using ShutdownMode = System.Windows.ShutdownMode;
 namespace Smv.Modules.MgrExt
 {
 
-  /// <summary>
-  /// Interaction logic for Window1.xaml
-  /// </summary>
+  ///<summary>
+  ///Interaction logic for Window1.xaml
+  ///</summary>
   public partial class MainWindow : DXRibbonWindow
   {
     [ImportMany(typeof(IWorkModuleContract))]
