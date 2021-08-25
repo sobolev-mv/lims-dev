@@ -908,7 +908,7 @@ namespace Viz.WrkModule.RptOtk
       }
 
       //Делаем кнопки управления невидимыми 
-      for (int i = ModuleConst.AccCmdOtkAvoBonus; i < ModuleConst.AccCmdThp + 1; i++){
+      for (int i = ModuleConst.AccCmdOtkAvoBonus; i < ModuleConst.AccCmdWarningCoupons + 1; i++){
         var uie = LogicalTreeHelper.FindLogicalNode(this.usrControl, "b" + ModuleConst.ModuleId + "_" + i) as UIElement;
         if (uie == null) continue;
 
@@ -951,7 +951,7 @@ namespace Viz.WrkModule.RptOtk
     private DelegateCommand<Object> otkChratcerListCoilsCommand;
     private DelegateCommand<Object> otkFreqDistrDefectAvoCommand;
     private DelegateCommand<Object> otkFinCutByCatCommand;
-    private DelegateCommand<Object> thpCommand;
+    private DelegateCommand<Object> warningCouponsCommand;
 
     public ICommand ShowListRptCommand
     {
@@ -2203,22 +2203,22 @@ namespace Viz.WrkModule.RptOtk
     }
     
 
-    public ICommand ThpCommand
+    public ICommand WarningCouponsCommand
     {
-      get { return thpCommand ?? (thpCommand = new DelegateCommand<Object>(ExecuteThp, CanExecuteThp)); }
+      get { return warningCouponsCommand ?? (warningCouponsCommand = new DelegateCommand<Object>(ExecuteWarningCoupons, CanExecuteWarningCoupons)); }
     }
 
-    private void ExecuteThp(Object parameter)
+    private void ExecuteWarningCoupons(Object parameter)
     {
-      var src = Etc.StartPath + ModuleConst.ThpSource;
-      var dst = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + ModuleConst.ThpDest;
-      var rptParam = new Db.ThpRptParam(src, dst)
+      var src = Etc.StartPath + ModuleConst.WarningCouponsSource;
+      var dst = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + ModuleConst.WarningCouponsDest;
+      var rptParam = new Db.WarningCouponsRptParam(src, dst)
       {
         DateBegin = DateBegin,
         DateEnd = DateEnd
       };
 
-      var sp = new Db.Thp();
+      var sp = new Db.WarningCoupons();
       Boolean res = sp.RunXls(rpt, RunXlsRptCompleted, rptParam);
 
       if (!res) return;
@@ -2226,7 +2226,7 @@ namespace Viz.WrkModule.RptOtk
       if (barEditItem != null) barEditItem.IsVisible = true;
     }
 
-    private bool CanExecuteThp(Object parameter)
+    private bool CanExecuteWarningCoupons(Object parameter)
     {
       return true;
     }

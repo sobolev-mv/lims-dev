@@ -14,23 +14,23 @@ using Viz.DbApp.Psi;
 
 namespace Viz.WrkModule.RptOtk.Db
 {
-  public sealed class ThpRptParam : Smv.Xls.XlsInstanceParam
+  public sealed class WarningCouponsRptParam : Smv.Xls.XlsInstanceParam
   {
     public DateTime DateBegin { get; set; }
     public DateTime DateEnd { get; set; }
 
-    public ThpRptParam(string sourceXlsFile, string destXlsFile) : base(sourceXlsFile, destXlsFile)
+    public WarningCouponsRptParam(string sourceXlsFile, string destXlsFile) : base(sourceXlsFile, destXlsFile)
     {
       
     }
   }
 
-  public sealed class Thp : Smv.Xls.XlsRpt
+  public sealed class WarningCoupons : Smv.Xls.XlsRpt
   {
 
     protected override void DoWorkXls(object sender, DoWorkEventArgs e)
     {
-      ThpRptParam prm = (e.Argument as ThpRptParam);
+      WarningCouponsRptParam prm = (e.Argument as WarningCouponsRptParam);
       dynamic wrkSheet = null;
 
       try
@@ -72,7 +72,7 @@ namespace Viz.WrkModule.RptOtk.Db
 
     }
 
-    private Boolean RunRpt(ThpRptParam prm, dynamic CurrentWrkSheet)
+    private Boolean RunRpt(WarningCouponsRptParam prm, dynamic CurrentWrkSheet)
     {
       OracleDataReader odr = null;
       string SqlStmt = null;

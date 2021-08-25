@@ -42,7 +42,7 @@
     public const int AccCmdFreqDistrDefectAvo = 322;
     public const int AccCmdOtkQualityAvo2 = 323;
     public const int AccCmdFinCutByCat = 324;
-    public const int AccCmdThp = 325;
+    public const int AccCmdWarningCoupons = 325;
 
     public const string ScriptsFolder = "\\Scripts";
     public const string OtkQntDefMonthSource = "\\Xlt\\Viz.WrkModule.RptOtkQntDefMonth.xltx";
@@ -114,8 +114,8 @@
     public const string FinCutByCatSource = "\\Xlt\\Viz.WrkModule.RptOtk-FinCutByCatMonth.xltx";
     public const string FinCutByCatDest = "\\Viz.WrkModule.RptOtk-FinCutByCatMonth.xlsx";
 
-    public const string ThpSource = "\\Xlt\\Viz.WrkModule.RptOtk-Thp.xltx";
-    public const string ThpDest = "\\Viz.WrkModule.RptOtk-Thp.xlsx";
+    public const string WarningCouponsSource = "\\Xlt\\Viz.WrkModule.RptOtk-WarningCoupons.xltx";
+    public const string WarningCouponsDest = "\\Viz.WrkModule.RptOtk-WarningCoupons.xlsx";
 
   }
 }
