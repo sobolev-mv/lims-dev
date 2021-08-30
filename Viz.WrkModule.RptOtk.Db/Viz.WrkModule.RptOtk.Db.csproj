@@ -81,6 +81,7 @@
     <Compile Include="SeqCoilLineAoo.cs" />
     <Compile Include="SgpDefects.cs" />
     <Compile Include="SgpDefectsSort1Gost.cs" />
+    <Compile Include="WarningCoupons.cs" />
     <Compile Include="To2Sort.cs" />
   </ItemGroup>
   <ItemGroup>
