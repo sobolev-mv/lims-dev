@@ -24,7 +24,7 @@ namespace Smv.Modules.MgrExt
 {
 
   ///<summary>
-  ///Interaction logic for Window1.xaml
+  ///Interaction logic for Window1.xaml 
   ///</summary>
   public partial class MainWindow : DXRibbonWindow
   {
@@ -167,7 +167,7 @@ namespace Smv.Modules.MgrExt
 
       DbContract = DbContracts.ToArray()[0];
             
-      if (!DbContract.Connect()) return;//!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      if (!DbContract.Connect()) return;//!!!!!!!!!!!
 
       stiStatus1623510.Content = DbContract.GetStatusInfo1("Copyright © NLMK-IT Ltd 2008-" + DateTime.Today.Year.ToString(CultureInfo.InvariantCulture));
       stiStatus2623510.Content = DbContract.GetStatusInfo2(String.Empty);
