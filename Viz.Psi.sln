@@ -69,6 +69,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viz.WrkModule.PrintLabel.Db
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viz.WrkModule.Qc", "Viz.WrkModule.Qc\Viz.WrkModule.Qc.csproj", "{75CC35FD-70EE-4873-89EC-D35F7F993BE9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Viz.WrkModule.Qc.Db", "Viz.WrkModule.Qc.Db\Viz.WrkModule.Qc.Db.csproj", "{AEE1A811-E792-4A38-B94F-B94A64EDDA7D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -415,6 +417,18 @@ Global
 		{75CC35FD-70EE-4873-89EC-D35F7F993BE9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{75CC35FD-70EE-4873-89EC-D35F7F993BE9}.Release|x86.ActiveCfg = Release|Any CPU
 		{75CC35FD-70EE-4873-89EC-D35F7F993BE9}.Release|x86.Build.0 = Release|Any CPU
+		{AEE1A811-E792-4A38-B94F-B94A64EDDA7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEE1A811-E792-4A38-B94F-B94A64EDDA7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEE1A811-E792-4A38-B94F-B94A64EDDA7D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{AEE1A811-E792-4A38-B94F-B94A64EDDA7D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{AEE1A811-E792-4A38-B94F-B94A64EDDA7D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AEE1A811-E792-4A38-B94F-B94A64EDDA7D}.Debug|x86.Build.0 = Debug|Any CPU
+		{AEE1A811-E792-4A38-B94F-B94A64EDDA7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEE1A811-E792-4A38-B94F-B94A64EDDA7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEE1A811-E792-4A38-B94F-B94A64EDDA7D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{AEE1A811-E792-4A38-B94F-B94A64EDDA7D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{AEE1A811-E792-4A38-B94F-B94A64EDDA7D}.Release|x86.ActiveCfg = Release|Any CPU
+		{AEE1A811-E792-4A38-B94F-B94A64EDDA7D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

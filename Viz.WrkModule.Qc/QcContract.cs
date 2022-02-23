@@ -52,7 +52,7 @@ namespace Viz.WrkModule.Qc
 
     public string CaptionControl
     {
-      get { return " Управ кач-вом"; }
+      get { return "Управ кач-вом"; }
     }
 
     public string HintControl
@@ -75,9 +75,7 @@ namespace Viz.WrkModule.Qc
 
     public QcContract()
     {
-      //largeGlyph = new BitmapImage(new Uri("pack://application:,,,/Viz.WrkModule.Qc;Component/Images/ModuleGlyph-32x32.png"));
-      //largeGlyph = new BitmapImage(new Uri("d:\\PRJ\\LIMS-DEV\\Viz.Psi\\Viz.WrkModule.Qc\\Images\\ModuleGlyph-32x32.png", UriKind.RelativeOrAbsolute));
-      largeGlyph = new BitmapImage(new Uri("Images/ModuleGlyph-32x32.png", UriKind.Relative));
+      largeGlyph = new BitmapImage(new Uri("pack://application:,,,/Viz.WrkModule.Qc;Component/Images/ModuleGlyph-32x32.png"));
     }
 
   }

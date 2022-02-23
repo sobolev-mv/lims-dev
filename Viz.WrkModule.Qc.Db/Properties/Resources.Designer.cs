@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Viz.WrkModule.Diagrm.Properties {
+namespace Viz.WrkModule.Qc.Db.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Viz.WrkModule.Diagrm.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Viz.WrkModule.Diagrm.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Viz.WrkModule.Qc.Db.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
