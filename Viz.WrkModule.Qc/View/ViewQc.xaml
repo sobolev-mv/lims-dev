@@ -41,15 +41,16 @@
         <dxl:LayoutGroup Header="Выбрать" View="GroupBox" HorizontalAlignment="Stretch" Orientation="Vertical" ItemLabelsAlignment="Local" IsCollapsible="False" IsCollapsed="false" Padding="0,0,0,3">
           <dxl:LayoutItem>
             <dxl:FlowLayoutControl Orientation="Horizontal" ItemSpace="3" Padding="0,0,0,0">
-              <RadioButton Content="Параметры" Command="{Binding SelectTypeUmCommand}" CommandParameter="0" />
-              <RadioButton Content="Качеств показатели" Command="{Binding SelectTypeUmCommand}" CommandParameter="1" />
-              <RadioButton Content="Влияние" Command="{Binding SelectTypeUmCommand}" CommandParameter="2" />
+              <RadioButton Content="Группы параметров" Command="{Binding SelectTypeRefCommand}" CommandParameter="0" />
+              <RadioButton Content="Параметры" Command="{Binding SelectTypeRefCommand}" CommandParameter="1" />
+              <RadioButton Content="Качеств показатели" Command="{Binding SelectTypeRefCommand}" CommandParameter="2" />
+              <RadioButton Content="Влияние" Command="{Binding SelectTypeRefCommand}" CommandParameter="3" />
             </dxl:FlowLayoutControl>
           </dxl:LayoutItem>
         </dxl:LayoutGroup>
-          <dxg:GridControl Name="GcRef" ShowBorder="True" ItemsSource="{Binding Path=ShipProdProp}" Tag="0" Padding="0,2,0,0">
+          <dxg:GridControl Name="GcRef" ShowBorder="True" Padding="0,2,0,0">
             <dxg:GridControl.View>
-              <dxg:TableView NavigationStyle="Cell" AllowEditing="True"  ShowGroupPanel="false" AllowGrouping="false" AutoWidth="True" ShowTotalSummary="false"  ShowGroupedColumns="True" ShowGroupFooters="True" GroupSummaryDisplayMode="AlignByColumns" UseEvenRowBackground="True"/>
+            <dxg:TableView NavigationStyle="Cell" AllowEditing="True" NewItemRowPosition="Bottom" ShowGroupPanel="false" AllowGrouping="false" AutoWidth="True" ShowTotalSummary="false"  ShowGroupedColumns="True" ShowGroupFooters="True" GroupSummaryDisplayMode="AlignByColumns" UseEvenRowBackground="True"/>
             </dxg:GridControl.View>
         </dxg:GridControl>
       </dxl:LayoutControl>

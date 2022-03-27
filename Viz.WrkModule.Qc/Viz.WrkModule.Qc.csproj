@@ -53,6 +53,7 @@
     <Reference Include="DevExpress.Xpf.Ribbon.v21.2, Version=21.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml">
@@ -102,6 +103,10 @@
       <Project>{6d17ac21-b5c2-4ace-9d29-cd99c4f82286}</Project>
       <Name>Smv.Prj.Core</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Viz.WrkModule.Qc.Db\Viz.WrkModule.Qc.Db.csproj">
+      <Project>{aee1a811-e792-4a38-b94f-b94a64edda7d}</Project>
+      <Name>Viz.WrkModule.Qc.Db</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
