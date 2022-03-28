@@ -11,6 +11,7 @@ namespace Viz.WrkModule.Qc.Db
     public ParamGroupDataTable ParamGroup { get; private set; }
     public ParamDataTable Param { get; private set; }
     public QmIdicatorDataTable QmIdicator { get; private set; }
+    public InfluenceDataTable Influence { get; private set; }
 
     public DsQc() : base()
     {
@@ -24,6 +25,9 @@ namespace Viz.WrkModule.Qc.Db
 
       this.QmIdicator = new QmIdicatorDataTable("QmIdicator");
       this.Tables.Add(this.QmIdicator);
+
+      this.Influence = new InfluenceDataTable("Influence");
+      this.Tables.Add(this.Influence);
 
     }
 
@@ -42,9 +46,11 @@ namespace Viz.WrkModule.Qc.Db
           AutoIncrement = true,
           AutoIncrementStep = -1
         };
+        col.Caption = "ID";
         this.Columns.Add(col);
 
         col = new DataColumn("Name", typeof(string), null, MappingType.Element) { AllowDBNull = false };
+        col.Caption = "Наименование";
         this.Columns.Add(col);
 
         this.Constraints.Add(new UniqueConstraint("Pk_" + tblName, new[] { this.Columns["Id"] }, true));
@@ -61,7 +67,7 @@ namespace Viz.WrkModule.Qc.Db
         adapter.SelectCommand = new OracleCommand
         {
           Connection = Odac.DbConnection,
-          CommandText = "SELECT ID, NAME FROM VIZ_PRN.QMF_PARAM_GROUP",
+          CommandText = "SELECT ID, NAME FROM VIZ_PRN.QMF_PARAM_GROUP ORDER BY ID",
           CommandType = CommandType.Text
         };
 
@@ -118,7 +124,7 @@ namespace Viz.WrkModule.Qc.Db
           DbType = DbType.String,
           OracleDbType = OracleDbType.VarChar,
           Direction = ParameterDirection.Input,
-          ParameterName = "PNMAE",
+          ParameterName = "PNAME",
           SourceColumn = "NAME",
           SourceColumnNullMapping = false,
           SourceVersion = DataRowVersion.Current
@@ -136,6 +142,29 @@ namespace Viz.WrkModule.Qc.Db
           SourceVersion = DataRowVersion.Original
         };
         adapter.UpdateCommand.Parameters.Add(param);
+
+        //DeleteCommand
+        adapter.DeleteCommand = new OracleCommand
+        {
+          Connection = Odac.DbConnection,
+          CommandText = "DELETE VIZ_PRN.QMF_PARAM_GROUP WHERE (ID = :Original_ID)",
+          CommandType = CommandType.Text,
+          PassParametersByName = true,
+          UpdatedRowSource = UpdateRowSource.None
+        };
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Int32,
+          Direction = ParameterDirection.Input,
+          IsNullable = false,
+          ParameterName = "Original_ID",
+          SourceColumn = "ID",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Original
+        };
+        adapter.DeleteCommand.Parameters.Add(param);
+
       }
 
       public int LoadData()
@@ -337,7 +366,7 @@ namespace Viz.WrkModule.Qc.Db
           DbType = DbType.String,
           OracleDbType = OracleDbType.VarChar,
           Direction = ParameterDirection.Input,
-          ParameterName = "PNMAE",
+          ParameterName = "PNAME",
           SourceColumn = "NAME",
           SourceColumnNullMapping = false,
           SourceVersion = DataRowVersion.Current
@@ -394,7 +423,7 @@ namespace Viz.WrkModule.Qc.Db
 
         param = new OracleParameter
         {
-          DbType = DbType.Int32,
+          DbType = DbType.Int64,
           Direction = ParameterDirection.Input,
           IsNullable = false,
           ParameterName = "Original_ID",
@@ -403,6 +432,29 @@ namespace Viz.WrkModule.Qc.Db
           SourceVersion = DataRowVersion.Original
         };
         adapter.UpdateCommand.Parameters.Add(param);
+
+        //DeleteCommand
+        adapter.DeleteCommand = new OracleCommand
+        {
+          Connection = Odac.DbConnection,
+          CommandText = "DELETE VIZ_PRN.QMF_PARAM WHERE (ID = :Original_ID)",
+          CommandType = CommandType.Text,
+          PassParametersByName = true,
+          UpdatedRowSource = UpdateRowSource.None
+        };
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Int64,
+          Direction = ParameterDirection.Input,
+          IsNullable = false,
+          ParameterName = "Original_ID",
+          SourceColumn = "ID",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Original
+        };
+        adapter.DeleteCommand.Parameters.Add(param);
+
       }
 
       public int LoadData()
@@ -427,7 +479,7 @@ namespace Viz.WrkModule.Qc.Db
         this.TableName = tblName;
         adapter = new OracleDataAdapter();
 
-        var col = new DataColumn("Id", typeof(int), null, MappingType.Element)
+        var col = new DataColumn("Id", typeof(Int64), null, MappingType.Element)
         {
           AllowDBNull = false,
           AutoIncrement = true,
@@ -524,7 +576,7 @@ namespace Viz.WrkModule.Qc.Db
           DbType = DbType.String,
           OracleDbType = OracleDbType.VarChar,
           Direction = ParameterDirection.Input,
-          ParameterName = "PNMAE",
+          ParameterName = "PNAME",
           SourceColumn = "NAME",
           SourceColumnNullMapping = false,
           SourceVersion = DataRowVersion.Current
@@ -536,8 +588,8 @@ namespace Viz.WrkModule.Qc.Db
           DbType = DbType.Double,
           OracleDbType = OracleDbType.Number,
           Direction = ParameterDirection.Input,
-          ParameterName = "TOU",
-          SourceColumn = "PTOU",
+          ParameterName = "PTOU",
+          SourceColumn = "TOU",
           SourceColumnNullMapping = false,
           SourceVersion = DataRowVersion.Current
         };
@@ -555,6 +607,28 @@ namespace Viz.WrkModule.Qc.Db
           SourceVersion = DataRowVersion.Original
         };
         adapter.UpdateCommand.Parameters.Add(param);
+
+        //DeleteCommand
+        adapter.DeleteCommand = new OracleCommand
+        {
+          Connection = Odac.DbConnection,
+          CommandText = "DELETE VIZ_PRN.QMF_INDICATOR WHERE (ID = :Original_ID)",
+          CommandType = CommandType.Text,
+          PassParametersByName = true,
+          UpdatedRowSource = UpdateRowSource.None
+        };
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Int64,
+          Direction = ParameterDirection.Input,
+          IsNullable = false,
+          ParameterName = "Original_ID",
+          SourceColumn = "ID",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Original
+        };
+        adapter.DeleteCommand.Parameters.Add(param);
       }
 
       public int LoadData()
@@ -567,6 +641,162 @@ namespace Viz.WrkModule.Qc.Db
         return Odac.SaveChangedData(this, adapter);
       }
 
+    }
+
+    public class InfluenceDataTable : DataTable
+    {
+      protected readonly OracleDataAdapter adapter;
+
+      public InfluenceDataTable(string tblName) : base()
+      {
+        this.TableName = tblName;
+        adapter = new OracleDataAdapter();
+
+        var col = new DataColumn("ParamId", typeof(Int64), null, MappingType.Element)
+        {
+          AllowDBNull = false,
+          AutoIncrement = false,
+          AutoIncrementStep = -1
+        };
+        this.Columns.Add(col);
+
+        col = new DataColumn("IndicatorId", typeof(Int64), null, MappingType.Element)
+        {
+          AllowDBNull = false,
+          AutoIncrement = false,
+          AutoIncrementStep = -1
+        };
+        this.Columns.Add(col);
+
+        col = new DataColumn("ValInfluence", typeof(double), null, MappingType.Element);
+        this.Columns.Add(col);
+
+        this.Constraints.Add(new UniqueConstraint("Pk_" + tblName, new[] { this.Columns["ParamId"], this.Columns["IndicatorId"] }, true));
+        
+        adapter.TableMappings.Clear();
+        var dtm = new System.Data.Common.DataTableMapping("VIZ_PRN.QMF_INFLUENCE", tblName);
+        dtm.ColumnMappings.Add("PARAM_ID", "ParamId");
+        dtm.ColumnMappings.Add("INDICATOR_ID", "IndicatorId");
+        dtm.ColumnMappings.Add("VAL_INFLUENCE", "ValInfluence");
+        adapter.TableMappings.Add(dtm);
+
+        //Select Command
+        adapter.SelectCommand = new OracleCommand
+        {
+          Connection = Odac.DbConnection,
+          CommandText = "SELECT PARAM_ID, INDICATOR_ID, VAL_INFLUENCE FROM VIZ_PRN.QMF_INFLUENCE ORDER BY INDICATOR_ID",
+          CommandType = CommandType.Text
+        };
+
+        //Insert Command
+        adapter.InsertCommand = new OracleCommand
+        {
+          Connection = Odac.DbConnection,
+          CommandText =
+            "INSERT INTO VIZ_PRN.QMF_INFLUENCE(PARAM_ID, INDICATOR_ID, VAL_INFLUENCE) " +
+            "VALUES(:PPARAM_ID, :PINDICATOR_ID, :PVAL_INFLUENCE)",
+          CommandType = CommandType.Text,
+          PassParametersByName = true,
+          UpdatedRowSource = UpdateRowSource.None
+        };
+
+        var param = new OracleParameter
+        {
+          DbType = DbType.Int64,
+          OracleDbType = OracleDbType.Int64,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PPARAM_ID",
+          SourceColumn = "PARAM_ID",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.InsertCommand.Parameters.Add(param);
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Int64,
+          OracleDbType = OracleDbType.Int64,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PINDICATOR_ID",
+          SourceColumn = "INDICATOR_ID",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.InsertCommand.Parameters.Add(param);
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Double,
+          OracleDbType = OracleDbType.Number,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PVAL_INFLUENCE",
+          SourceColumn = "VAL_INFLUENCE",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.InsertCommand.Parameters.Add(param);
+
+        //Update Command
+        adapter.UpdateCommand = new OracleCommand
+        {
+          Connection = Odac.DbConnection,
+          CommandText =
+            "UPDATE VIZ_PRN.QMF_INFLUENCE SET VAL_INFLUENCE = :PVAL_INFLUENCE " +
+            "WHERE (PARAM_ID = :Original_PARAM_ID) AND (INDICATOR_ID = :Original_INDICATOR_ID)",
+          CommandType = CommandType.Text,
+          PassParametersByName = true,
+          UpdatedRowSource = UpdateRowSource.None
+        };
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Double,
+          OracleDbType = OracleDbType.Number,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PVAL_INFLUENCE",
+          SourceColumn = "VAL_INFLUENCE",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.UpdateCommand.Parameters.Add(param);
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Int64,
+          OracleDbType = OracleDbType.Int64,
+          Direction = ParameterDirection.Input,
+          IsNullable = false,
+          ParameterName = "Original_PARAM_ID",
+          SourceColumn = "PARAM_ID",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Original
+        };
+        adapter.UpdateCommand.Parameters.Add(param);
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Int64,
+          OracleDbType = OracleDbType.Int64,
+          Direction = ParameterDirection.Input,
+          IsNullable = false,
+          ParameterName = "Original_INDICATOR_ID",
+          SourceColumn = "INDICATOR_ID",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Original
+        };
+        adapter.UpdateCommand.Parameters.Add(param);
+      }
+
+      public int LoadData()
+      {
+        return Odac.LoadDataTable(this, adapter, true, null);
+      }
+
+      public int SaveData()
+      {
+        return Odac.SaveChangedData(this, adapter);
+      }
+      
     }
 
   }

@@ -27,6 +27,7 @@ namespace Viz.WrkModule.Qc
     private readonly UserControl usrControl;
     private readonly DsQc dsQc = new DsQc();
     private readonly GridControl gcRef;
+    private ModuleConst.TypeReferences crTypeRef;
     #endregion
 
     #region Public Property
@@ -84,7 +85,7 @@ namespace Viz.WrkModule.Qc
         Header = "Группа параметров"
       };
 
-      LookUpEditSettings lookUpSettings = new LookUpEditSettings
+      var lookUpSettings = new LookUpEditSettings
       {
         StyleSettings = new SearchLookUpEditStyleSettings(), 
         DisplayMember = "Name", 
@@ -190,6 +191,69 @@ namespace Viz.WrkModule.Qc
 
     }
 
+    void CreateInfluenceRef()
+    {
+      //Обновляем параметры и показатели
+      dsQc.ParamGroup.LoadData();
+      dsQc.QmIdicator.LoadData();
+
+      gcRef.ItemsSource = dsQc.Influence;
+
+      
+      var col = new GridColumn()
+      {
+        FieldName = "ParamId",
+        Header = "Параметр"
+      };
+
+      var lookUpSettings = new LookUpEditSettings
+      {
+        StyleSettings = new SearchLookUpEditStyleSettings(),
+        DisplayMember = "Name",
+        ValueMember = "Id",
+        ItemsSource = dsQc.Param
+      };
+      col.EditSettings = lookUpSettings;
+      gcRef.Columns.Add(col);
+      
+
+      col = new GridColumn()
+      {
+        FieldName = "IndicatorId",
+        Header = "Показатель качества"
+      };
+      
+      lookUpSettings = new LookUpEditSettings
+      {
+        StyleSettings = new SearchLookUpEditStyleSettings(),
+        DisplayMember = "Name",
+        ValueMember = "Id",
+        ItemsSource = dsQc.QmIdicator
+      };
+      col.EditSettings = lookUpSettings;
+      gcRef.Columns.Add(col);
+
+      col = new GridColumn()
+      {
+        FieldName = "ValInfluence",
+        Header = "Воздействие"
+      };
+
+      TextEditSettings textSetinngs = new TextEditSettings
+      {
+        MaskType = MaskType.Numeric,
+        Mask = "n3",
+        MaskIgnoreBlank = false,
+        MaskUseAsDisplayFormat = true,
+      };
+      col.EditSettings = textSetinngs;
+      gcRef.Columns.Add(col);
+
+    }
+
+
+
+
     #endregion
 
     #region Constructor
@@ -207,6 +271,7 @@ namespace Viz.WrkModule.Qc
       dsQc.ParamGroup.LoadData();
       dsQc.Param.LoadData();
       dsQc.QmIdicator.LoadData();
+      dsQc.Influence.LoadData();
 
     }
     #endregion
@@ -215,20 +280,21 @@ namespace Viz.WrkModule.Qc
     public void SelectTypeRef(Object param)
     {
       gcRef.Columns.Clear();
-      
-      switch (Convert.ToInt32(param))
+      crTypeRef = (ModuleConst.TypeReferences)Convert.ToInt32(param);
+
+      switch (crTypeRef)
       {
-        case (int)ModuleConst.TypeReferences.GroupParam:
+        case ModuleConst.TypeReferences.GroupParam:
           CreateGroupParamRef();
           break;
-        case (int)ModuleConst.TypeReferences.Param:
+        case ModuleConst.TypeReferences.Param:
           CreateParamRef();
           break;
-        case (int)ModuleConst.TypeReferences.QmIndicator:
+        case ModuleConst.TypeReferences.QmIndicator:
           CreateQmIndicatorRef();
           break;
-        case (int)ModuleConst.TypeReferences.Influence:
-
+        case ModuleConst.TypeReferences.Influence:
+          CreateInfluenceRef();
           break;
       }
     }
@@ -236,6 +302,38 @@ namespace Viz.WrkModule.Qc
     public bool CanShowDefectMap()
     {
       return true;
+    }
+
+    public void SaveData()
+    {
+      switch (crTypeRef)
+      {
+        case ModuleConst.TypeReferences.GroupParam:
+          dsQc.ParamGroup.SaveData();
+          break;
+        case ModuleConst.TypeReferences.Param:
+          dsQc.Param.SaveData();
+          break;
+        case ModuleConst.TypeReferences.QmIndicator:
+          dsQc.QmIdicator.SaveData();
+          break;
+        case ModuleConst.TypeReferences.Influence:
+          dsQc.Influence.SaveData();
+          break;
+      }
+    }
+    public bool CanSaveData()
+    {
+      return dsQc.HasChanges(); ;
+    }
+
+    public void DeleteData()
+    {
+      (gcRef.View as TableView).DeleteRow(gcRef.View.FocusedRowHandle);
+    }
+    public bool CanDeleteData()
+    {
+      return ((gcRef.View.IsFocusedView) && (gcRef.View.FocusedRowHandle >= 0)); ;
     }
     #endregion
 

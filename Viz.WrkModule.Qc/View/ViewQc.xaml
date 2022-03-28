@@ -20,12 +20,18 @@
         </DataTemplate>
       </dxb:BarStaticItem.ContentTemplate>
     </dxb:BarStaticItem>
-    <dxb:BarButtonItem  Name="btnQuitxyz" Content="Выход" Tag="CloseUserControl" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/close-32x32.png" Description="New blank document." Hint="Закончить работу с АРМ управление качеством."/>
+    <dxb:BarButtonItem Name="btnQuitxyz" Content="Выход" Tag="CloseUserControl" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/close-32x32.png" Description="New blank document." Hint="Закончить работу с АРМ управление качеством."/>
+    <dxb:BarButtonItem Name="btnSaveData" Content="Сохр." Command="{Binding SaveDataCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/Save-32x32.png" Hint="Сохранить измененные данные в БД." />
+    <dxb:BarButtonItem Name="btnDeleteData" Content="Удал." Command="{Binding DeleteDataCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/Delete-32x32.png" Hint="Удалить данные из справочника." />
   </ruc:RibbonUserControl.BarManagerItems>
   <ruc:RibbonUserControl.UserPages>
     <dxr:RibbonPage Caption="Качество">
       <dxr:RibbonPageGroup Name="rpgImage" AllowCollapse="False">
         <dxb:BarStaticItemLink BarItemName="siGlyxza" RibbonStyle="Large"/>
+      </dxr:RibbonPageGroup>
+      <dxr:RibbonPageGroup Name="rpgRef" Caption="Справочники" AllowCollapse="False">
+        <dxb:BarButtonItemLink BarItemName="btnSaveData" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
+        <dxb:BarButtonItemLink BarItemName="btnDeleteData" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
       </dxr:RibbonPageGroup>
       <dxr:RibbonPageGroup Name="rpgQuit" AllowCollapse="False">
         <dxb:BarButtonItemLink BarItemName="btnQuitxyz" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
