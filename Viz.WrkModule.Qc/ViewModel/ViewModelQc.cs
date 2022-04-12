@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -27,19 +28,67 @@ namespace Viz.WrkModule.Qc
     private readonly UserControl usrControl;
     private readonly DsQc dsQc = new DsQc();
     private readonly GridControl gcRef;
+    private GridControl gcParamChr;
+    private GridControl gcParamChrOpt;
+
     private ModuleConst.TypeReferences crTypeRef;
+    private DataRow ParamDataRow = null;
+    private int prevMasterRowHandle = -1;
+
+
     #endregion
 
     #region Public Property
+    public DataTable ParamChr
+    {
+      get { return dsQc.ParamChr; }
+    }
     #endregion
 
     #region Protected Method
     #endregion
 
     #region Private Method
+    private void ParamItemChanged(object sender, CurrentItemChangedEventArgs args)
+    {
+      //btnXSamplesRowChanged.CommandParameter = (sender as DevExpress.Xpf.Grid.GridViewBase).Grid.GetRow(e.RowData.RowHandle.Value);
+      if (args.NewItem != null)
+      {
+        ParamDataRow = (args.NewItem as DataRowView).Row;
+        this.dsQc.ParamChr.LoadData(Convert.ToInt64(this.ParamDataRow["Id"]));
+      }
+      else
+        ParamDataRow = null;
+    }
+
+    private void MasterRowExpanded(object sender, RowEventArgs e)
+    {
+      GridControl gcDetail = (sender as GridControl).GetDetail(e.RowHandle) as GridControl;
+
+      if ((prevMasterRowHandle >= 0) && e.RowHandle != prevMasterRowHandle)
+        (sender as GridControl).CollapseMasterRow(prevMasterRowHandle);
+      
+      gcDetail.ItemsSource = dsQc.ParamChr;
+      prevMasterRowHandle = e.RowHandle;
+    }
+
+    private void FocusedViewChanged(object sender, FocusedViewChangedEventArgs e)
+    {
+      var detailGrid = (e.NewView.DataControl).OwnerDetailDescriptor as DataControlDetailDescriptor;
+
+      if (detailGrid == null) 
+        return;
+
+      var tag = Convert.ToInt32(detailGrid.DataControl.Tag);
+
+      if (tag == 2)
+        //detailGrid.DataControl.ItemsSource = dsQc.ParamChr;
+        e.NewView.DataControl.ItemsSource = dsQc.ParamChr;
+    }
 
     void CreateGroupParamRef()
     {
+      (gcRef.View as TableView).AllowMasterDetail = true;
       gcRef.ItemsSource = dsQc.ParamGroup;
       var col = new GridColumn()
       {
@@ -70,6 +119,10 @@ namespace Viz.WrkModule.Qc
     {
       //Обновляем группы параметров
       dsQc.ParamGroup.LoadData();
+
+      this.gcRef.CurrentItemChanged += ParamItemChanged;
+      this.gcRef.MasterRowExpanded += MasterRowExpanded;
+      this.gcRef.View.FocusedViewChanged += FocusedViewChanged;
 
       gcRef.ItemsSource = dsQc.Param;
       var col = new GridColumn()
@@ -144,6 +197,132 @@ namespace Viz.WrkModule.Qc
       col.EditSettings = checkSettings;
       gcRef.Columns.Add(col);
 
+      col = new GridColumn()
+      {
+        FieldName = "MinValOp",
+        Header = "Мин. опт. значение"
+      };
+
+      textSetinngs = new TextEditSettings
+      {
+        MaskType = MaskType.Numeric,
+        Mask = "n4",
+        MaskIgnoreBlank = false,
+        MaskUseAsDisplayFormat = true,
+      };
+      col.EditSettings = textSetinngs;
+      gcRef.Columns.Add(col);
+
+      col = new GridColumn()
+      {
+        FieldName = "MaxValOp",
+        Header = "Мах. опт. значение"
+      };
+      col.EditSettings = textSetinngs;
+      gcRef.Columns.Add(col);
+
+      //Создаем Detail Grids
+      DataControlDetailDescriptor dataControlDetail1 = new DataControlDetailDescriptor();
+      //dataControlDetail1.ItemsSourcePath = "ParamChr";
+      gcParamChr = new GridControl();
+      gcParamChr.Tag = 1;
+      dataControlDetail1.DataControl = gcParamChr;
+      gcParamChr.View.DetailHeaderContent = "Характеристи пр-ров";
+      (gcParamChr.View as TableView).ShowGroupPanel = false;
+      (gcParamChr.View as TableView).NewItemRowPosition = NewItemRowPosition.Bottom;
+      (gcParamChr.View as TableView).NavigationStyle = GridViewNavigationStyle.Cell;
+      (gcParamChr.View as TableView).AllowEditing = true;
+      
+      col = new GridColumn()
+      {
+        FieldName = "ParamId",
+        Header = "ID"
+      };
+      gcParamChr.Columns.Add(col);
+
+      col = new GridColumn()
+      {
+        FieldName = "Thikness",
+        Header = "Толщина"
+      };
+      gcParamChr.Columns.Add(col);
+
+      col = new GridColumn()
+      {
+        FieldName = "MinVal",
+        Header = "Мин. значение"
+      };
+      gcParamChr.Columns.Add(col);
+
+      col = new GridColumn()
+      {
+        FieldName = "MaxVal",
+        Header = "Макс. значение"
+      };
+      gcParamChr.Columns.Add(col);
+
+      col = new GridColumn()
+      {
+        FieldName = "LogVal",
+        Header = "Логическое значение"
+      };
+      gcParamChr.Columns.Add(col);
+
+      DataControlDetailDescriptor dataControlDetail2 = new DataControlDetailDescriptor();
+      //dataControlDetail.ItemsSourcePath = "Orders";
+      gcParamChrOpt = new GridControl();
+      gcParamChrOpt.Tag = 2;
+      dataControlDetail2.DataControl = gcParamChrOpt;
+      gcParamChrOpt.View.DetailHeaderContent = "Характеристи оптим. пр-ров";
+      (gcParamChrOpt.View as TableView).ShowGroupPanel = false;
+      (gcParamChrOpt.View as TableView).NewItemRowPosition = NewItemRowPosition.Bottom;
+      
+
+      col = new GridColumn()
+      {
+        FieldName = "ParamId",
+        Header = "ID"
+      };
+      gcParamChrOpt.Columns.Add(col);
+
+      col = new GridColumn()
+      {
+        FieldName = "Thikness",
+        Header = "Толщина"
+      };
+      gcParamChrOpt.Columns.Add(col);
+
+      col = new GridColumn()
+      {
+        FieldName = "MinVal",
+        Header = "Мин. значение"
+      };
+      gcParamChrOpt.Columns.Add(col);
+
+      col = new GridColumn()
+      {
+        FieldName = "MaxVal",
+        Header = "Макс. значение"
+      };
+      gcParamChrOpt.Columns.Add(col);
+
+      col = new GridColumn()
+      {
+        FieldName = "LogVal",
+        Header = "Логическое значение"
+      };
+      gcParamChrOpt.Columns.Add(col);
+      
+      //ContentDetailDescriptor contentDetail = new ContentDetailDescriptor();
+      //contentDetail.ContentTemplate = (DataTemplate)FindResource("EmployeeNotes");
+      //contentDetail.HeaderContent = "Notes";
+
+      TabViewDetailDescriptor tabDetail = new TabViewDetailDescriptor();
+      tabDetail.DetailDescriptors.Add(dataControlDetail1);
+      tabDetail.DetailDescriptors.Add(dataControlDetail2);
+      //tabDetail.DetailDescriptors.Add(contentDetail);
+
+      gcRef.DetailDescriptor = tabDetail;
     }
 
     void CreateQmIndicatorRef()
@@ -280,6 +459,14 @@ namespace Viz.WrkModule.Qc
     public void SelectTypeRef(Object param)
     {
       gcRef.Columns.Clear();
+      this.gcRef.CurrentItemChanged -= ParamItemChanged;
+      this.gcRef.MasterRowExpanded -= MasterRowExpanded;
+      this.gcRef.View.FocusedViewChanged -= FocusedViewChanged;
+
+      //(gcRef.DetailDescriptor as TabViewDetailDescriptor)?.DetailDescriptors.Clear();
+      gcRef.DetailDescriptor = null;
+      
+
       crTypeRef = (ModuleConst.TypeReferences)Convert.ToInt32(param);
 
       switch (crTypeRef)

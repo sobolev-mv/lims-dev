@@ -54,9 +54,9 @@
             </dxl:FlowLayoutControl>
           </dxl:LayoutItem>
         </dxl:LayoutGroup>
-          <dxg:GridControl Name="GcRef" ShowBorder="True" Padding="0,2,0,0">
+          <dxg:GridControl Name="GcRef" ShowBorder="True" Padding="0,2,0,0" Tag="0">
             <dxg:GridControl.View>
-            <dxg:TableView NavigationStyle="Cell" AllowEditing="True" NewItemRowPosition="Bottom" ShowGroupPanel="false" AllowGrouping="false" AutoWidth="True" ShowTotalSummary="false"  ShowGroupedColumns="True" ShowGroupFooters="True" GroupSummaryDisplayMode="AlignByColumns" UseEvenRowBackground="True"/>
+            <dxg:TableView NavigationStyle="Cell" AllowEditing="True" NewItemRowPosition="Bottom" ShowGroupPanel="false" AllowGrouping="false" AutoWidth="True" ShowTotalSummary="false"  ShowGroupedColumns="True" ShowGroupFooters="True" GroupSummaryDisplayMode="AlignByColumns" UseEvenRowBackground="True" AllowMasterDetail="True"/>
             </dxg:GridControl.View>
         </dxg:GridControl>
       </dxl:LayoutControl>

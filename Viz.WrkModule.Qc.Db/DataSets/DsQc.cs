@@ -12,6 +12,7 @@ namespace Viz.WrkModule.Qc.Db
     public ParamDataTable Param { get; private set; }
     public QmIdicatorDataTable QmIdicator { get; private set; }
     public InfluenceDataTable Influence { get; private set; }
+    public ParamChrDataTable ParamChr { get; private set; }
 
     public DsQc() : base()
     {
@@ -28,6 +29,9 @@ namespace Viz.WrkModule.Qc.Db
 
       this.Influence = new InfluenceDataTable("Influence");
       this.Tables.Add(this.Influence);
+
+      this.ParamChr = new ParamChrDataTable("ParamChr");
+      this.Tables.Add(this.ParamChr);
 
     }
 
@@ -218,7 +222,13 @@ namespace Viz.WrkModule.Qc.Db
 
         col = new DataColumn("InCalc", typeof(int), null, MappingType.Element);
         this.Columns.Add(col);
-        
+
+        col = new DataColumn("MinValOp", typeof(double), null, MappingType.Element);
+        this.Columns.Add(col);
+
+        col = new DataColumn("MaxValOp", typeof(double), null, MappingType.Element);
+        this.Columns.Add(col);
+
         this.Constraints.Add(new UniqueConstraint("Pk_" + tblName, new[] { this.Columns["Id"] }, true));
         this.Columns["Id"].Unique = true;
 
@@ -231,13 +241,15 @@ namespace Viz.WrkModule.Qc.Db
         dtm.ColumnMappings.Add("MAX_VAL", "MaxVal");
         dtm.ColumnMappings.Add("LOG_VAL", "LogVal");
         dtm.ColumnMappings.Add("IN_CALC", "InCalc");
+        dtm.ColumnMappings.Add("MIN_VALOP", "MinValOp");
+        dtm.ColumnMappings.Add("MAX_VALOP", "MaxValOp");
         adapter.TableMappings.Add(dtm);
 
         //Select Command
         adapter.SelectCommand = new OracleCommand
         {
           Connection = Odac.DbConnection,
-          CommandText = "SELECT ID, GROUP_ID, NAME, MIN_VAL, MAX_VAL, LOG_VAL, IN_CALC FROM VIZ_PRN.QMF_PARAM ORDER BY ID, GROUP_ID",
+          CommandText = "SELECT ID, GROUP_ID, NAME, MIN_VAL, MAX_VAL, LOG_VAL, IN_CALC, MIN_VALOP, MAX_VALOP FROM VIZ_PRN.QMF_PARAM ORDER BY ID, GROUP_ID",
           CommandType = CommandType.Text
         };
 
@@ -246,8 +258,8 @@ namespace Viz.WrkModule.Qc.Db
         {
           Connection = Odac.DbConnection,
           CommandText =
-            "INSERT INTO VIZ_PRN.QMF_PARAM(ID, GROUP_ID, NAME, MIN_VAL, MAX_VAL, LOG_VAL, IN_CALC) " +
-            "VALUES(:PID, :PGROUP_ID, :PNAME, :PMIN_VAL, :PMAX_VAL, :PLOG_VAL, :PIN_CALC)",
+            "INSERT INTO VIZ_PRN.QMF_PARAM(ID, GROUP_ID, NAME, MIN_VAL, MAX_VAL, LOG_VAL, IN_CALC, MIN_VALOP, MAX_VALOP) " +
+            "VALUES(:PID, :PGROUP_ID, :PNAME, :PMIN_VAL, :PMAX_VAL, :PLOG_VAL, :PIN_CALC, :PMIN_VALOP, :PMAX_VALOP)",
           CommandType = CommandType.Text,
           PassParametersByName = true,
           UpdatedRowSource = UpdateRowSource.None
@@ -337,12 +349,38 @@ namespace Viz.WrkModule.Qc.Db
         };
         adapter.InsertCommand.Parameters.Add(param);
 
+        param = new OracleParameter
+        {
+          DbType = DbType.Double,
+          OracleDbType = OracleDbType.Number,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PMIN_VALOP",
+          SourceColumn = "MIN_VALOP",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.InsertCommand.Parameters.Add(param);
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Double,
+          OracleDbType = OracleDbType.Number,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PMAX_VALOP",
+          SourceColumn = "MAX_VALOP",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.InsertCommand.Parameters.Add(param);
+
+
         //Update Command
         adapter.UpdateCommand = new OracleCommand
         {
           Connection = Odac.DbConnection,
           CommandText =
-            "UPDATE VIZ_PRN.QMF_PARAM SET GROUP_ID = :PGROUP_ID, NAME = :PNAME, MIN_VAL = :PMIN_VAL, MAX_VAL = :PMAX_VAL, LOG_VAL = :PLOG_VAL, IN_CALC = :PIN_CALC " +
+            "UPDATE VIZ_PRN.QMF_PARAM SET GROUP_ID = :PGROUP_ID, NAME = :PNAME, MIN_VAL = :PMIN_VAL, MAX_VAL = :PMAX_VAL, LOG_VAL = :PLOG_VAL, IN_CALC = :PIN_CALC, " +
+            "MIN_VALOP = :PMIN_VALOP, MAX_VALOP = :PMAX_VALOP " +
             "WHERE (ID = :Original_ID)",
           CommandType = CommandType.Text,
           PassParametersByName = true,
@@ -420,6 +458,31 @@ namespace Viz.WrkModule.Qc.Db
           SourceVersion = DataRowVersion.Current
         };
         adapter.UpdateCommand.Parameters.Add(param);
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Double,
+          OracleDbType = OracleDbType.Number,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PMIN_VALOP",
+          SourceColumn = "MIN_VALOP",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.UpdateCommand.Parameters.Add(param);
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Double,
+          OracleDbType = OracleDbType.Number,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PMAX_VALOP",
+          SourceColumn = "MAX_VALOP",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.UpdateCommand.Parameters.Add(param);
+
 
         param = new OracleParameter
         {
@@ -798,6 +861,191 @@ namespace Viz.WrkModule.Qc.Db
       }
       
     }
+
+    public class ParamChrDataTable : DataTable
+    {
+      protected readonly OracleDataAdapter adapter;
+
+      public ParamChrDataTable(string tblName) : base()
+      {
+        this.TableName = tblName;
+        adapter = new OracleDataAdapter();
+
+        var col = new DataColumn("ParamId", typeof(Int64), null, MappingType.Element)
+        {
+          AllowDBNull = false,
+          AutoIncrement = false,
+          AutoIncrementStep = -1
+        };
+        this.Columns.Add(col);
+
+        col = new DataColumn("Thikness", typeof(double), null, MappingType.Element)
+        {
+          AllowDBNull = false,
+          AutoIncrement = false,
+          AutoIncrementStep = -1
+        };
+        this.Columns.Add(col);
+
+        col = new DataColumn("MinVal", typeof(double), null, MappingType.Element);
+        this.Columns.Add(col);
+
+        col = new DataColumn("MaxVal", typeof(double), null, MappingType.Element);
+        this.Columns.Add(col);
+
+        col = new DataColumn("LogVal", typeof(int), null, MappingType.Element);
+        this.Columns.Add(col);
+
+        this.Constraints.Add(new UniqueConstraint("Pk_" + tblName, new[] { this.Columns["ParamId"], this.Columns["Thikness"] }, true));
+
+        adapter.TableMappings.Clear();
+        var dtm = new System.Data.Common.DataTableMapping("VIZ_PRN.QMF_PARAM_CHR", tblName);
+        dtm.ColumnMappings.Add("PARAM_ID", "ParamId");
+        dtm.ColumnMappings.Add("THIKNESS", "Thikness");
+        dtm.ColumnMappings.Add("MIN_VAL", "MinVal");
+        dtm.ColumnMappings.Add("MAX_VAL", "MaxVal");
+        dtm.ColumnMappings.Add("LOG_VAL", "LogVal");
+        adapter.TableMappings.Add(dtm);
+
+        //Select Command
+        adapter.SelectCommand = new OracleCommand
+        {
+          Connection = Odac.DbConnection,
+          CommandText = "SELECT PARAM_ID, THIKNESS, MIN_VAL, MAX_VAL, LOG_VAL " +
+                        "FROM VIZ_PRN.QMF_PARAM_CHR " +
+                        "WHERE PARAM_ID = :PPARAM_ID " +
+                        "ORDER BY THIKNESS",
+          CommandType = CommandType.Text
+        };
+
+        var param = new OracleParameter
+        {
+          DbType = DbType.Int64,
+          OracleDbType = OracleDbType.Int64,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PPARAM_ID",
+          SourceColumn = "PARAM_ID",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.SelectCommand.Parameters.Add(param);
+
+
+        //Insert Command
+        adapter.InsertCommand = new OracleCommand
+        {
+          Connection = Odac.DbConnection,
+          CommandText =
+            "INSERT INTO VIZ_PRN.QMF_INFLUENCE(PARAM_ID, INDICATOR_ID, VAL_INFLUENCE) " +
+            "VALUES(:PPARAM_ID, :PINDICATOR_ID, :PVAL_INFLUENCE)",
+          CommandType = CommandType.Text,
+          PassParametersByName = true,
+          UpdatedRowSource = UpdateRowSource.None
+        };
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Int64,
+          OracleDbType = OracleDbType.Int64,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PPARAM_ID",
+          SourceColumn = "PARAM_ID",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.InsertCommand.Parameters.Add(param);
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Int64,
+          OracleDbType = OracleDbType.Int64,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PINDICATOR_ID",
+          SourceColumn = "INDICATOR_ID",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.InsertCommand.Parameters.Add(param);
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Double,
+          OracleDbType = OracleDbType.Number,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PVAL_INFLUENCE",
+          SourceColumn = "VAL_INFLUENCE",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.InsertCommand.Parameters.Add(param);
+
+        //Update Command
+        adapter.UpdateCommand = new OracleCommand
+        {
+          Connection = Odac.DbConnection,
+          CommandText =
+            "UPDATE VIZ_PRN.QMF_INFLUENCE SET VAL_INFLUENCE = :PVAL_INFLUENCE " +
+            "WHERE (PARAM_ID = :Original_PARAM_ID) AND (INDICATOR_ID = :Original_INDICATOR_ID)",
+          CommandType = CommandType.Text,
+          PassParametersByName = true,
+          UpdatedRowSource = UpdateRowSource.None
+        };
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Double,
+          OracleDbType = OracleDbType.Number,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PVAL_INFLUENCE",
+          SourceColumn = "VAL_INFLUENCE",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.UpdateCommand.Parameters.Add(param);
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Int64,
+          OracleDbType = OracleDbType.Int64,
+          Direction = ParameterDirection.Input,
+          IsNullable = false,
+          ParameterName = "Original_PARAM_ID",
+          SourceColumn = "PARAM_ID",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Original
+        };
+        adapter.UpdateCommand.Parameters.Add(param);
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Int64,
+          OracleDbType = OracleDbType.Int64,
+          Direction = ParameterDirection.Input,
+          IsNullable = false,
+          ParameterName = "Original_INDICATOR_ID",
+          SourceColumn = "INDICATOR_ID",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Original
+        };
+        adapter.UpdateCommand.Parameters.Add(param);
+      }
+
+      public int LoadData(Int64 paramId)
+      {
+        var lstPrmValue = new List<Object> { paramId };
+        return Odac.LoadDataTable(this, adapter, true, lstPrmValue);
+      }
+
+      public int SaveData()
+      {
+        return Odac.SaveChangedData(this, adapter);
+      }
+
+    }
+
+
+
+
 
   }
 
