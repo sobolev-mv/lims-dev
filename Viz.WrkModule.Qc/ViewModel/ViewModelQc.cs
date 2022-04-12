@@ -79,10 +79,9 @@ namespace Viz.WrkModule.Qc
       if (detailGrid == null) 
         return;
 
-      var tag = Convert.ToInt32(detailGrid.DataControl.Tag);
+      var tag = (ModuleConst.TypeParamsGc)Convert.ToInt32(detailGrid.DataControl.Tag);
 
-      if (tag == 2)
-        //detailGrid.DataControl.ItemsSource = dsQc.ParamChr;
+      if (tag == ModuleConst.TypeParamsGc.GcParamChrOpt)
         e.NewView.DataControl.ItemsSource = dsQc.ParamChr;
     }
 

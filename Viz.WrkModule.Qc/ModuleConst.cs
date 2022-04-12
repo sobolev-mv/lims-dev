@@ -12,7 +12,14 @@
       QmIndicator = 2,
       Influence = 3
     };
-    
+
+    public enum TypeParamsGc
+    {
+      GcParam = 0,
+      GcParamChr = 1,
+      GcParamChrOpt = 2
+    };
+
     //Группы 1ур.
     internal enum AccL1Gr
     {
