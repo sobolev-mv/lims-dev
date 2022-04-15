@@ -17,7 +17,8 @@
     {
       GcParam = 0,
       GcParamChr = 1,
-      GcParamChrOpt = 2
+      GcParamChrOpt = 2,
+      GcParamLnk = 3
     };
 
     //Группы 1ур.

@@ -19,7 +19,7 @@ using DevExpress.Xpf.Grid;
 using DevExpress.Xpf.Grid.LookUp;
 using Smv.Print.RawData;
 using Smv.Utils;
-using Viz.WrkModule.Qc.Db;
+using Viz.WrkModule.Qc.Db.DataSets;
 
 namespace Viz.WrkModule.Qc
 {
@@ -31,7 +31,9 @@ namespace Viz.WrkModule.Qc
     private readonly GridControl gcRef;
     private GridControl gcParamChr;
     private GridControl gcParamChrOpt;
+    private GridControl gcParamLnk;
     private GridControl gcFocused;
+
 
     private ModuleConst.TypeReferences crTypeRef;
     private DataRow paramDataRow = null;
@@ -57,6 +59,7 @@ namespace Viz.WrkModule.Qc
         paramIdKeyVal = Convert.ToInt64(this.paramDataRow["Id"]);
         this.dsQc.ParamChr.LoadData(paramIdKeyVal);
         this.dsQc.ParamChrOpt.LoadData(paramIdKeyVal);
+        this.dsQc.ParamLnk.LoadData(paramIdKeyVal);
       }
       else
         paramDataRow = null;
@@ -87,8 +90,15 @@ namespace Viz.WrkModule.Qc
 
       var tag = (ModuleConst.TypeParamsGc)Convert.ToInt32(detailGrid.DataControl.Tag);
 
-      if (tag == ModuleConst.TypeParamsGc.GcParamChrOpt)
-        e.NewView.DataControl.ItemsSource = dsQc.ParamChrOpt;
+      switch (tag)
+      {
+        case ModuleConst.TypeParamsGc.GcParamChrOpt:
+          e.NewView.DataControl.ItemsSource = dsQc.ParamChrOpt;
+          break;
+        case ModuleConst.TypeParamsGc.GcParamLnk:
+          e.NewView.DataControl.ItemsSource = dsQc.ParamLnk;
+          break;
+      }
     }
 
     private void ParamChrNewRow(object sender, DataTableNewRowEventArgs e)
@@ -321,6 +331,55 @@ namespace Viz.WrkModule.Qc
       checkSettings = new CheckEditSettings();
       col.EditSettings = checkSettings;
       gcParamChrOpt.Columns.Add(col);
+
+      DataControlDetailDescriptor dataControlDetail3 = new DataControlDetailDescriptor();
+      //dataControlDetail.ItemsSourcePath = "Orders";
+      gcParamLnk = new GridControl();
+      gcParamLnk.Tag = 3;
+      dataControlDetail3.DataControl = gcParamLnk;
+      gcParamLnk.View.DetailHeaderContent = "Зависимость параметров";
+      (gcParamLnk.View as TableView).ShowGroupPanel = false;
+      (gcParamLnk.View as TableView).NewItemRowPosition = NewItemRowPosition.Bottom;
+
+      col = new GridColumn()
+      {
+        FieldName = "ParamId",
+        Header = "ID",
+        ReadOnly = true
+      };
+      gcParamLnk.Columns.Add(col);
+
+      col = new GridColumn()
+      {
+        FieldName = "ParamIdLnk",
+        Header = "Параметр"
+      };
+
+      lookUpSettings = new LookUpEditSettings
+      {
+        StyleSettings = new SearchLookUpEditStyleSettings(),
+        DisplayMember = "Name",
+        ValueMember = "Id",
+        ItemsSource = dsQc.Param
+      };
+      col.EditSettings = lookUpSettings;
+      gcParamLnk.Columns.Add(col);
+
+      col = new GridColumn()
+      {
+        FieldName = "CofLnk",
+        Header = "Влияние"
+      };
+
+      textSetinngs = new TextEditSettings
+      {
+        MaskType = MaskType.Numeric,
+        Mask = "n3",
+        MaskIgnoreBlank = false,
+        MaskUseAsDisplayFormat = true,
+      };
+      col.EditSettings = textSetinngs;
+      gcParamLnk.Columns.Add(col);
       
       //ContentDetailDescriptor contentDetail = new ContentDetailDescriptor();
       //contentDetail.ContentTemplate = (DataTemplate)FindResource("EmployeeNotes");
@@ -329,6 +388,7 @@ namespace Viz.WrkModule.Qc
       TabViewDetailDescriptor tabDetail = new TabViewDetailDescriptor();
       tabDetail.DetailDescriptors.Add(dataControlDetail1);
       tabDetail.DetailDescriptors.Add(dataControlDetail2);
+      tabDetail.DetailDescriptors.Add(dataControlDetail3);
       //tabDetail.DetailDescriptors.Add(contentDetail);
 
       gcRef.DetailDescriptor = tabDetail;
@@ -464,6 +524,7 @@ namespace Viz.WrkModule.Qc
       
       dsQc.ParamChr.TableNewRow += ParamChrNewRow;
       dsQc.ParamChrOpt.TableNewRow += ParamChrNewRow;
+      dsQc.ParamLnk.TableNewRow += ParamChrNewRow;
     }
 
  
@@ -516,6 +577,7 @@ namespace Viz.WrkModule.Qc
           dsQc.Param.SaveData();
           dsQc.ParamChr.SaveData();
           dsQc.ParamChrOpt.SaveData();
+          dsQc.ParamLnk.SaveData();
           break;
         case ModuleConst.TypeReferences.QmIndicator:
           dsQc.QmIndicator.SaveData();

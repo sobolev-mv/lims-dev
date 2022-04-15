@@ -60,6 +60,30 @@
     <Compile Include="DataSets\DsQc.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DataSets\InfluenceDataTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataSets\ParamChrDataTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataSets\ParamChrOptDataTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataSets\ParamDataTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataSets\ParamGroupDataTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataSets\ParamLnkDataTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataSets\QmIndicatorDataTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataSets\ThicknessDataTable.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
