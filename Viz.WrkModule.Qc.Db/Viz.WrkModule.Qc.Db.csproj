@@ -113,10 +113,6 @@
       <Name>Smv.Data.Oracle</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Smv.Prj.Core\Smv.Prj.Core.csproj">
-      <Project>{6d17ac21-b5c2-4ace-9d29-cd99c4f82286}</Project>
-      <Name>Smv.Prj.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
