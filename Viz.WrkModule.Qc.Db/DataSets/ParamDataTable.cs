@@ -54,7 +54,7 @@ namespace Viz.WrkModule.Qc.Db.DataSets
         {
           Connection = Odac.DbConnection,
           CommandText =
-            "SELECT ID, GROUP_ID, NAME, IN_CALC FROM VIZ_PRN.QMF_PARAM ORDER BY ID, GROUP_ID",
+            "SELECT ID, GROUP_ID, NAME, IN_CALC FROM VIZ_PRN.QMF_PARAM ORDER BY GROUP_ID, ID",
           CommandType = CommandType.Text
         };
 
