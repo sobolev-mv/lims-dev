@@ -35,7 +35,10 @@ namespace Viz.WrkModule.Qc.Db.DataSets
         col = new DataColumn("Name", typeof(string), null, MappingType.Element) { AllowDBNull = false };
         this.Columns.Add(col);
 
-        col = new DataColumn("InCalc", typeof(int), null, MappingType.Element);
+        col = new DataColumn("InCalc", typeof(int), null, MappingType.Element)
+        {
+          AllowDBNull = false
+        };
         this.Columns.Add(col);
 
         this.Constraints.Add(new UniqueConstraint("Pk_" + tblName, new[] { this.Columns["Id"] }, true));
