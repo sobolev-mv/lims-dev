@@ -97,6 +97,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Utils.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -112,6 +113,10 @@
       <Project>{c4ad1f75-a147-46aa-824a-7bfbc08648f0}</Project>
       <Name>Smv.Data.Oracle</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Smv.Prj.Core\Smv.Prj.Core.csproj">
+      <Project>{6d17ac21-b5c2-4ace-9d29-cd99c4f82286}</Project>
+      <Name>Smv.Prj.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

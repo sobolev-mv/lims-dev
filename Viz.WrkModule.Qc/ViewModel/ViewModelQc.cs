@@ -612,8 +612,19 @@ namespace Viz.WrkModule.Qc
       else
         return false;
     }
+
+    public void ReportParam()
+    {
+      Db.Utils.ParamRpt();
+    }
+
+    public bool CanReportParam()
+    {
+      return true;
+    }
+
     #endregion
 
 
+    }
   }
-}

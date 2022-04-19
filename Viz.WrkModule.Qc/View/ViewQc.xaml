@@ -23,7 +23,7 @@
     <dxb:BarButtonItem Name="btnQuitxyz" Content="Выход" Tag="CloseUserControl" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/close-32x32.png" Description="New blank document." Hint="Закончить работу с АРМ управление качеством."/>
     <dxb:BarButtonItem Name="btnSaveData" Content="Сохр." Command="{Binding SaveDataCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/Save-32x32.png" Hint="Сохранить измененные данные в БД." />
     <dxb:BarButtonItem Name="btnDeleteData" Content="Удал." Command="{Binding DeleteDataCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/Delete-32x32.png" Hint="Удалить данные из справочника." />
-    <dxb:BarButtonItem Name="btnRptParam" Content="Парам." LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/RptParam-32x32.png" Hint="Выгрузить параметры из справочника." />
+    <dxb:BarButtonItem Name="btnRptParam" Content="Парам." Command="{Binding ReportParamCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/RptParam-32x32.png" Hint="Выгрузить параметры из справочника." />
   </ruc:RibbonUserControl.BarManagerItems>
   <ruc:RibbonUserControl.UserPages>
     <dxr:RibbonPage Caption="Качество">
