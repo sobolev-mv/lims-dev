@@ -41,6 +41,12 @@ namespace Viz.WrkModule.Qc.Db.DataSets
         };
         this.Columns.Add(col);
 
+        col = new DataColumn("InCalcOp", typeof(int), null, MappingType.Element)
+        {
+          AllowDBNull = false
+        };
+        this.Columns.Add(col);
+
         this.Constraints.Add(new UniqueConstraint("Pk_" + tblName, new[] { this.Columns["Id"] }, true));
         this.Columns["Id"].Unique = true;
 
@@ -50,6 +56,7 @@ namespace Viz.WrkModule.Qc.Db.DataSets
         dtm.ColumnMappings.Add("GROUP_ID", "GroupId");
         dtm.ColumnMappings.Add("NAME", "Name");
         dtm.ColumnMappings.Add("IN_CALC", "InCalc");
+        dtm.ColumnMappings.Add("IN_CALCOP", "InCalcOp");
         adapter.TableMappings.Add(dtm);
 
         //Select Command
@@ -57,7 +64,7 @@ namespace Viz.WrkModule.Qc.Db.DataSets
         {
           Connection = Odac.DbConnection,
           CommandText =
-            "SELECT ID, GROUP_ID, NAME, IN_CALC FROM VIZ_PRN.QMF_PARAM ORDER BY GROUP_ID, ID",
+            "SELECT ID, GROUP_ID, NAME, IN_CALC, IN_CALCOP FROM VIZ_PRN.QMF_PARAM ORDER BY GROUP_ID, ID",
           CommandType = CommandType.Text
         };
 
@@ -66,8 +73,8 @@ namespace Viz.WrkModule.Qc.Db.DataSets
         {
           Connection = Odac.DbConnection,
           CommandText =
-            "INSERT INTO VIZ_PRN.QMF_PARAM(ID, GROUP_ID, NAME, IN_CALC) " +
-            "VALUES(:PID, :PGROUP_ID, :PNAME, :PIN_CALC)",
+            "INSERT INTO VIZ_PRN.QMF_PARAM(ID, GROUP_ID, NAME, IN_CALC, IN_CALCOP) " +
+            "VALUES(:PID, :PGROUP_ID, :PNAME, :PIN_CALC, :PIN_CALCOP)",
           CommandType = CommandType.Text,
           PassParametersByName = true,
           UpdatedRowSource = UpdateRowSource.None
@@ -121,12 +128,24 @@ namespace Viz.WrkModule.Qc.Db.DataSets
         };
         adapter.InsertCommand.Parameters.Add(param);
 
+        param = new OracleParameter
+        {
+          DbType = DbType.Int32,
+          OracleDbType = OracleDbType.Integer,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PIN_CALCOP",
+          SourceColumn = "IN_CALCOP",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.InsertCommand.Parameters.Add(param);
+
         //Update Command
         adapter.UpdateCommand = new OracleCommand
         {
           Connection = Odac.DbConnection,
           CommandText =
-            "UPDATE VIZ_PRN.QMF_PARAM SET GROUP_ID = :PGROUP_ID, NAME = :PNAME, IN_CALC = :PIN_CALC " +
+            "UPDATE VIZ_PRN.QMF_PARAM SET GROUP_ID = :PGROUP_ID, NAME = :PNAME, IN_CALC = :PIN_CALC, IN_CALCOP = :PIN_CALCOP " +
             "WHERE (ID = :Original_ID)",
           CommandType = CommandType.Text,
           PassParametersByName = true,
@@ -164,6 +183,18 @@ namespace Viz.WrkModule.Qc.Db.DataSets
           Direction = ParameterDirection.Input,
           ParameterName = "PIN_CALC",
           SourceColumn = "IN_CALC",
+          SourceColumnNullMapping = false,
+          SourceVersion = DataRowVersion.Current
+        };
+        adapter.UpdateCommand.Parameters.Add(param);
+
+        param = new OracleParameter
+        {
+          DbType = DbType.Int32,
+          OracleDbType = OracleDbType.Integer,
+          Direction = ParameterDirection.Input,
+          ParameterName = "PIN_CALCOP",
+          SourceColumn = "IN_CALCOP",
           SourceColumnNullMapping = false,
           SourceVersion = DataRowVersion.Current
         };

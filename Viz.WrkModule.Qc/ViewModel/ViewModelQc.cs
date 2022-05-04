@@ -179,9 +179,19 @@ namespace Viz.WrkModule.Qc
       col = new GridColumn()
       {
         FieldName = "InCalc",
-        Header = "Участвует в расчете"
+        Header = "Участвует в расчете ДЗ"
       };
+
       var checkSettings = new CheckEditSettings();
+      col.EditSettings = checkSettings;
+      gcRef.Columns.Add(col);
+
+      col = new GridColumn()
+      {
+        FieldName = "InCalcOp",
+        Header = "Участвует в расчете ОЗ"
+      };
+      checkSettings = new CheckEditSettings();
       col.EditSettings = checkSettings;
       gcRef.Columns.Add(col);
 
