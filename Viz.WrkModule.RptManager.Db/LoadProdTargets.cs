@@ -165,19 +165,7 @@ namespace Viz.WrkModule.RptManager.Db
       string strFirstCell;
       string strTeStep;
       string strAgr;
-
-      /*
-      const string strNzpCell = "D5,D10,D13,D24,D35,D38,D52,D54,D56,D73,D100";
-      const string strNzpTeStep = "1STROLL,1STCUT,DECARB,2NDROLL,2NDCUT,ISOGO,HTANNBF,IN_HTANNBF,STRANN,UO,IN_SGP";
-      const string strNzpAgr = "NZPALL,NZPALL,NZPALL,NZPALL,NZPALL,NZPALL,NZPALL,NZPALL,NZPALL,NZPALL,NZPALL";
-      */
-
-      /*берем из конфига
-      const string strFirstCell = "E4,E5,E8,E10,E11,E13,E15,E18,E21,E24,E26,E29,E32,E35,E36,E38,E40,E43,E46,E49,E52,E53,E54,E55,E56,E58,E61,E64,E67,E70,E73,E75,E78,E81,E84,E87,E90,E93,E96,E99,E106";
-      const string strTeStep = "HRC,1STROLL,1STROLL,1STCUT,1STCUT,DECARB,DECARB,DECARB,DECARB,2NDROLL,2NDROLL,2NDROLL,2NDROLL,2NDCUT,2NDCUT,ISOGO,ISOGO,ISOGO,ISOGO,ISOGO,HTANNBF,HTANNBF,HTANNBF,HTANNBF,STRANN,STRANN,STRANN,STRANN,STRANN,STRANN,UO,UO,UO,UO,UO,UO,UO,UO,UO,TOTALACCEPT,TOTALSHIP";
-      const string strAgr = "HRC,NZP,RM1300,NZP,APR1,NZP,ARO1,ARO2,AOO1A,NZP,RM12001,RM12002,RRM,NZP,APR8,NZP,AOO3A,AOO3B,AOO4A,AOO4B,NZP,BAF_PACK,BAF_IN,BAF_UNPACK,NZP,AVO3,AVO4,AVO5,AVO6,AVO7,NZP,APR3,APR4,APR5,APR6,APR9,APR10,APR12,APR14,TOTALACCEPT_GO,TOTALSHIP_GO";
-      */
-
+      
       //Читаем строки из конфиг.файла
       try
       {
@@ -209,17 +197,7 @@ namespace Viz.WrkModule.RptManager.Db
       try{
         result = true;
         ClearRptPeriod(fistDayWrkPeriod);
-        
-        /*
-        //Загрузка НЗП
-        var strNzpCellList = strNzpCell.Split(',');
-        var strNzpTeStepList = strNzpTeStep.Split(',');
-        var strNzpAgrList = strNzpAgr.Split(',');
-
-        for (int i = 0; i < strNzpCellList.Length; i++)
-          LoadToPlanTable(fistDayWrkPeriod, strNzpTeStepList[i], strNzpAgrList[i], fistDayWrkPeriod.AddDays(-1), Convert.ToDecimal(workbook.Worksheets[0].Cells[strNzpCellList[i]].Value.NumericValue));
-        */
-
+  
         //Загрузка по-агрегатно
         var strFirstCellList = strFirstCell.Split(',');
         var strTeStepList = strTeStep.Split(',');
@@ -240,15 +218,17 @@ namespace Viz.WrkModule.RptManager.Db
 
           for (DateTime dt = fistDayWrkPeriod; dt <= lastDayWrkPeriod; dt = dt.AddDays(1), j++){
             var r = LoadToPlanTable(fistDayWrkPeriod, strTeStepList[i], strAgrList[i], dt, Convert.ToDecimal(workbook.Worksheets[0].Cells[row, col + j].Value.NumericValue), "D");
+            
             if (!r)
               return true;
-
+            
             //здесь загружаем данные из столбца "План Мес"
             if (dt == lastDayWrkPeriod){
               r = LoadToPlanTable(fistDayWrkPeriod, strTeStepList[i], strAgrList[i], fistDayWrkPeriod, Convert.ToDecimal(workbook.Worksheets[0].Cells[row, col + j + 1].Value.NumericValue), "M");
               if (!r)
                 return true;
             }
+            
           }
         }
 
