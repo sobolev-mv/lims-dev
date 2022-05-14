@@ -4,8 +4,10 @@
                        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"
+                       xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
                        xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
                        xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core"
+                       xmlns:dxch="http://schemas.devexpress.com/winfx/2008/xaml/charts"
                        xmlns:dxl="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol" 
                        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
                        xmlns:local="clr-namespace:Viz.WrkModule.Qc"
@@ -24,6 +26,18 @@
     <dxb:BarButtonItem Name="btnSaveData" Content="Сохр." Command="{Binding SaveDataCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/Save-32x32.png" Hint="Сохранить измененные данные в БД." />
     <dxb:BarButtonItem Name="btnDeleteData" Content="Удал." Command="{Binding DeleteDataCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/Delete-32x32.png" Hint="Удалить данные из справочника." />
     <dxb:BarButtonItem Name="btnRptParam" Content="Парам." Command="{Binding ReportParamCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/RptParam-32x32.png" Hint="Выгрузить параметры из справочника." />
+    <dxb:BarEditItem Name="beiParam" EditValue="{Binding ParamVld, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Парам №: " Hint="Параметр расчета" EditWidth="170">
+      <dxb:BarEditItem.EditSettings>
+        <dxe:TextEditSettings TextWrapping="Wrap"/>
+      </dxb:BarEditItem.EditSettings>
+      <dxb:BarEditItem.EditStyle>
+        <Style TargetType="dxe:TextEdit">
+          <Setter Property="FontSize" Value="14"/>
+          <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+      </dxb:BarEditItem.EditStyle>
+    </dxb:BarEditItem>
+    <dxb:BarButtonItem Name="btnStartClc" Content="Расч." Command="{Binding ShowStsCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/RunClc-32x32.png" Hint="Расчитать х-тики качества." />
   </ruc:RibbonUserControl.BarManagerItems>
   <ruc:RibbonUserControl.UserPages>
     <dxr:RibbonPage Caption="Качество">
@@ -34,6 +48,10 @@
         <dxb:BarButtonItemLink BarItemName="btnSaveData" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
         <dxb:BarButtonItemLink BarItemName="btnDeleteData" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
         <dxb:BarButtonItemLink BarItemName="btnRptParam" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
+      </dxr:RibbonPageGroup>
+      <dxr:RibbonPageGroup Name="rpgUst" Caption="Уровень соблюдения технологии" AllowCollapse="False">
+        <dxb:BarEditItemLink BarItemName="beiParam"/>
+        <dxb:BarButtonItemLink BarItemName="btnStartClc" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
       </dxr:RibbonPageGroup>
       <dxr:RibbonPageGroup Name="rpgQuit" AllowCollapse="False">
         <dxb:BarButtonItemLink BarItemName="btnQuitxyz" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
@@ -62,6 +80,10 @@
             </dxg:GridControl.View>
         </dxg:GridControl>
       </dxl:LayoutControl>
+    </dxc:DXTabItem>
+    <dxc:DXTabItem Header="Уст">
+      <dxch:ChartControl Name="ChartSts">
+      </dxch:ChartControl>
     </dxc:DXTabItem>
   </dxc:DXTabControl>
 

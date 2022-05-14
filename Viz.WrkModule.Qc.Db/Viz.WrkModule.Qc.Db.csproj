@@ -57,6 +57,9 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSets\StsDataTablecs.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DataSets\DsQc.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -1,25 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Timers;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media.Animation;
-using System.Windows.Threading;
-using DevExpress.Xpf.Editors;
+﻿using DevExpress.Xpf.Editors;
 using DevExpress.Xpf.Editors.Settings;
 using DevExpress.Xpf.Grid;
 using DevExpress.Xpf.Grid.LookUp;
-using Smv.Print.RawData;
-using Smv.Utils;
+using DevExpress.Xpf.Charts;
+using DevExpress.Xpf.Bars;
+using DevExpress.Xpf.Core;
+using System;
+using System.Data;
+using System.Windows;
+using System.Windows.Controls;
 using Viz.WrkModule.Qc.Db.DataSets;
+
 
 namespace Viz.WrkModule.Qc
 {
@@ -28,22 +19,25 @@ namespace Viz.WrkModule.Qc
     #region Fields
     private readonly UserControl usrControl;
     private readonly DsQc dsQc = new DsQc();
+    private readonly DXTabControl tcMain;
     private readonly GridControl gcRef;
     private GridControl gcParamChr;
     private GridControl gcParamChrOpt;
     private GridControl gcParamLnk;
     private GridControl gcFocused;
+    private ChartControl chartSts;
 
 
     private ModuleConst.TypeReferences crTypeRef;
     private DataRow paramDataRow = null;
     private int prevMasterRowHandle = -1;
-    private Int64 paramIdKeyVal; 
+    private Int64 paramIdKeyVal;
 
 
     #endregion
 
     #region Public Property
+    public virtual string ParamVld { get; set; }
     #endregion
 
     #region Protected Method
@@ -519,13 +513,14 @@ namespace Viz.WrkModule.Qc
     public ViewModelQc(UserControl control, Object mainWindow)
     {
       usrControl = control;
+      tcMain = LogicalTreeHelper.FindLogicalNode(this.usrControl, "tcMain") as DXTabControl;
       gcRef = LogicalTreeHelper.FindLogicalNode(this.usrControl, "GcRef") as GridControl;
       /*
       if (this.dbgMaterial != null)
         this.dbgMaterial.CurrentItemChanged += CurrentItemChanged;
       */
 
-
+      chartSts = LogicalTreeHelper.FindLogicalNode(control, "ChartSts") as ChartControl;
       dsQc.ParamGroup.LoadData();
       dsQc.Param.LoadData();
       dsQc.QmIndicator.LoadData();
@@ -631,6 +626,57 @@ namespace Viz.WrkModule.Qc
     public bool CanReportParam()
     {
       return true;
+    }
+
+    public void ShowSts()
+    {
+      tcMain.SelectedIndex = 1;
+      chartSts.Diagram = null;
+      chartSts.Titles.Clear();
+
+      Db.Utils.CalcUst4LocNum("VLD", ParamVld);
+      dsQc.Sts.LoadData("VLD", ParamVld);
+
+      if (dsQc.Sts.Rows.Count == 0)
+      {
+        DXMessageBox.Show(Application.Current.Windows[0], "Данные по материалу отсутствуют.", "Нет данных", MessageBoxButton.OK, MessageBoxImage.Warning);
+        return;
+      }
+
+      chartSts.AnimationMode = ChartAnimationMode.OnDataChanged;
+      chartSts.Titles.Add(new Title()
+        {
+          Content = "Лок. №: " + ParamVld + "  " + "УСТ: " + Db.Utils.GetUst4LocNum("VLD", ParamVld).ToString(),
+          HorizontalAlignment = HorizontalAlignment.Center
+        }
+      );
+
+      chartSts.Diagram =  new XYDiagram2D();
+      chartSts.Diagram.Series.Add(new BarStackedSeries2D());
+      chartSts.Diagram.Series[0].Label = new SeriesLabel();
+      chartSts.Diagram.Series[0].LabelsVisibility = true;
+      ((BarStackedSeries2D)chartSts.Diagram.Series[0]).ValueScaleType = ScaleType.Numerical;
+
+      ((XYDiagram2D)chartSts.Diagram).AxisY = new AxisY2D
+      {
+        GridLinesVisible = true,
+        GridLinesMinorVisible = true,
+        VisualRange = new DevExpress.Xpf.Charts.Range()
+      };
+
+      ((XYDiagram2D)chartSts.Diagram).ActualAxisY.VisualRange.MinValue = 0;
+      ((XYDiagram2D)chartSts.Diagram).ActualAxisY.VisualRange.MaxValue = 1;
+
+
+      chartSts.Diagram.Series[0].ValueDataMember = "RatioSts";
+      chartSts.Diagram.Series[0].ArgumentDataMember = "NameGroup";
+      chartSts.Diagram.Series[0].DataSource = dsQc.Sts;
+
+    }
+
+    public bool CanShowSts()
+    {
+      return (!String.IsNullOrEmpty(this.ParamVld)); 
     }
 
     #endregion

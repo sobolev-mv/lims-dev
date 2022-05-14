@@ -64,8 +64,67 @@ namespace Viz.WrkModule.Qc.Db
       DxInfo.ShowDxBoxInfo("Выгрузка", "Выгрузка завершена.", MessageBoxImage.Information);
     }
 
+    public static double GetUst4LocNum(string typeSts, string locNum)
+    {
+      const string stmtSql = "select RATIO_LOCNUM from VIZ_PRN.V_QMF_STS where TYPE_CLC = :PTYPECLC and LOCNUM = :PLOCNUM";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "PTYPECLC",
+        DbType = DbType.String,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.VarChar,
+        Size = typeSts.Length,
+        Value = typeSts
+      };
+      lstPrm.Add(prm);
+
+      prm = new OracleParameter
+      {
+        ParameterName = "PLOCNUM",
+        DbType = DbType.String,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.VarChar,
+        Size = locNum.Length,
+        Value = locNum
+      };
+      lstPrm.Add(prm);
+
+      return Convert.ToDouble(Odac.ExecuteScalar(stmtSql, CommandType.Text, false, lstPrm));
+    }
+
+    public static void CalcUst4LocNum(string typeSts, string locNum)
+    {
+      const string stmtSql = "VIZ_PRN.QMF_CALC.CALCMAIN";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "pi_LocNum",
+        DbType = DbType.String,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.VarChar,
+        Size = locNum.Length,
+        Value = locNum
+      };
+      lstPrm.Add(prm);
 
 
+      prm = new OracleParameter
+      {
+        ParameterName = "pi_TypeClc",
+        DbType = DbType.String,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.VarChar,
+        Size = typeSts.Length,
+        Value = typeSts
+      };
+      lstPrm.Add(prm);
+
+
+      Odac.ExecuteNonQuery(stmtSql, CommandType.StoredProcedure, false, lstPrm);
+    }
 
 
   }

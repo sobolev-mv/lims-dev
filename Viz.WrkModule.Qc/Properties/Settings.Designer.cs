@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Viz.WrkModule.Qc.Properties {
+namespace Viz.WrkModule.Qc.Db.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
