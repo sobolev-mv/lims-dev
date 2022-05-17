@@ -57,6 +57,18 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSets\Agregate.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataSets\AgTyp.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataSets\Brigade.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataSets\TypeUst.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DataSets\StsDataTablecs.cs">
       <SubType>Component</SubType>
     </Compile>

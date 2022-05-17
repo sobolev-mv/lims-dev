@@ -21,6 +21,14 @@
       GcParamLnk = 3
     };
 
+    public enum TypeUstGrp
+    {
+      Agregate = 10,
+      AgTyp = 20,
+      WorkShop = 30
+    };
+
+
     //Группы 1ур.
     internal enum AccL1Gr
     {

@@ -17,6 +17,11 @@ namespace Viz.WrkModule.Qc.Db.DataSets
     public ParamChrOptDataTable ParamChrOpt { get; private set; }
     public ParamLnkDataTable ParamLnk { get; private set; }
     public StsDataTable Sts { get; private set; }
+    public TypeUstDataTable TypeUst { get; private set; }
+    public AgTypDataTable AgTyp { get; private set; }
+    public AgregateDataTable Agregate { get; private set; }
+    public BrigadeDataTable  Brigade { get; private set; }
+
     public DsQc() : base()
     {
       this.DataSetName = "DsQc";
@@ -47,6 +52,19 @@ namespace Viz.WrkModule.Qc.Db.DataSets
 
       this.Sts = new StsDataTable("Sts");
       this.Tables.Add(this.Sts);
+
+      this.TypeUst = new TypeUstDataTable("TypeUst");
+      this.Tables.Add(this.TypeUst);
+
+      this.AgTyp = new AgTypDataTable("AgTyp");
+      this.Tables.Add(this.AgTyp);
+
+      this.Agregate = new AgregateDataTable("Agregate");
+      this.Tables.Add(this.Agregate);
+
+      this.Brigade = new BrigadeDataTable("Brigade");
+      this.Tables.Add(this.Brigade);
+
 
     }
   }

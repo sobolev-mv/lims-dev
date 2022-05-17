@@ -26,7 +26,7 @@
     <dxb:BarButtonItem Name="btnSaveData" Content="Сохр." Command="{Binding SaveDataCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/Save-32x32.png" Hint="Сохранить измененные данные в БД." />
     <dxb:BarButtonItem Name="btnDeleteData" Content="Удал." Command="{Binding DeleteDataCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/Delete-32x32.png" Hint="Удалить данные из справочника." />
     <dxb:BarButtonItem Name="btnRptParam" Content="Парам." Command="{Binding ReportParamCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/RptParam-32x32.png" Hint="Выгрузить параметры из справочника." />
-    <dxb:BarEditItem Name="beiParam" EditValue="{Binding ParamVld, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Парам №: " Hint="Параметр расчета" EditWidth="170">
+    <dxb:BarEditItem Name="beiLocNum" EditValue="{Binding LocNum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Лок №: " Hint="Параметр расчета" EditWidth="170">
       <dxb:BarEditItem.EditSettings>
         <dxe:TextEditSettings TextWrapping="Wrap"/>
       </dxb:BarEditItem.EditSettings>
@@ -37,7 +37,39 @@
         </Style>
       </dxb:BarEditItem.EditStyle>
     </dxb:BarEditItem>
-    <dxb:BarButtonItem Name="btnStartClc" Content="Расч." Command="{Binding ShowStsCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/RunClc-32x32.png" Hint="Расчитать х-тики качества." />
+    <dxb:BarButtonItem Name="btnStartClc" Content="Расч." Command="{Binding CalcUst4LocNumCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/RunClc-32x32.png" Hint="Расчитать х-тики качества." />
+    <dxb:BarButtonItem Name="btnExportToPng" Content="Экспорт" Command="{Binding ExportStsToGraphFileCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/ExportToIMG_32x32.png" Hint="Экспорт диаграммы в гафический формат." />
+    <dxb:BarEditItem Name="beiDateBegin" EditValue="{Binding DateFrom}"  Content="От:" Hint="Дата начала периода" EditWidth="150">
+      <dxb:BarEditItem.EditSettings>
+        <dxe:DateEditSettings TextWrapping="Wrap" IsTextEditable="False" DisplayFormat="dd.MM.yyyy" MaskUseAsDisplayFormat="True" MaskType="DateTime" Mask="dd.MM.yyyy" MaskCulture="ru-RU" />
+      </dxb:BarEditItem.EditSettings>
+    </dxb:BarEditItem>
+    <dxb:BarEditItem Name="beiDateEnd"   EditValue="{Binding DateTo}"  Content="До:" Hint="Дата окончания периода" EditWidth="150">
+      <dxb:BarEditItem.EditSettings>
+        <dxe:DateEditSettings TextWrapping="Wrap" IsTextEditable="False" DisplayFormat="dd.MM.yyyy" MaskUseAsDisplayFormat="True" MaskType="DateTime" Mask="dd.MM.yyyy" MaskCulture="ru-RU"/>
+      </dxb:BarEditItem.EditSettings>
+    </dxb:BarEditItem>
+    <dxb:BarEditItem Name="cbTypeUst" EditValue="{Binding TypeUstId}"  Content="Тип:" Hint="Типы УСТ" EditWidth="150">
+      <dxb:BarEditItem.EditSettings>
+        <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.TypeUst, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="Id" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
+      </dxb:BarEditItem.EditSettings>
+    </dxb:BarEditItem>
+    <dxb:BarEditItem Name="cbAgTyp" EditValue="{Binding AgTyp}"  Content="Тех.шаг:" Hint="Технологический шаг" EditWidth="150">
+      <dxb:BarEditItem.EditSettings>
+        <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.AgTypTable, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="AgTyp" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
+      </dxb:BarEditItem.EditSettings>
+    </dxb:BarEditItem>
+    <dxb:BarEditItem Name="cbAgr" EditValue="{Binding Agr}"  Content="Агр-т:" Hint="Агрегат" EditWidth="150">
+      <dxb:BarEditItem.EditSettings>
+        <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.Agregate, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="Agr" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
+      </dxb:BarEditItem.EditSettings>
+    </dxb:BarEditItem>
+    <dxb:BarEditItem Name="cbBrig" EditValue="{Binding Brig}"  Content="Бриг:" Hint="Бригада" EditWidth="150">
+      <dxb:BarEditItem.EditSettings>
+        <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.Brigade, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="Id" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
+      </dxb:BarEditItem.EditSettings>
+    </dxb:BarEditItem>
+    <dxb:BarButtonItem Name="btnStartClcGrp" Content="Расч." Command="{Binding CalcUstGrpCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/Effects-32x32.png" Hint="Расчитать х-тики качества для групп." />
   </ruc:RibbonUserControl.BarManagerItems>
   <ruc:RibbonUserControl.UserPages>
     <dxr:RibbonPage Caption="Качество">
@@ -49,9 +81,19 @@
         <dxb:BarButtonItemLink BarItemName="btnDeleteData" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
         <dxb:BarButtonItemLink BarItemName="btnRptParam" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
       </dxr:RibbonPageGroup>
-      <dxr:RibbonPageGroup Name="rpgUst" Caption="Уровень соблюдения технологии" AllowCollapse="False">
-        <dxb:BarEditItemLink BarItemName="beiParam"/>
+      <dxr:RibbonPageGroup Name="rpgUst" Caption="УСТ единицы материала" AllowCollapse="False">
+        <dxb:BarEditItemLink BarItemName="beiLocNum"/>
         <dxb:BarButtonItemLink BarItemName="btnStartClc" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
+        <dxb:BarButtonItemLink BarItemName="btnExportToPng" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
+      </dxr:RibbonPageGroup>
+      <dxr:RibbonPageGroup Name="rpgUstGrp" Caption="УСТ групп" AllowCollapse="False">
+        <dxb:BarEditItemLink BarItemName="beiDateBegin" RibbonStyle="SmallWithText"/>
+        <dxb:BarEditItemLink BarItemName="beiDateEnd" RibbonStyle="SmallWithText"/>
+        <dxb:BarEditItemLink BarItemName="cbTypeUst" RibbonStyle="SmallWithText"/>
+        <dxb:BarEditItemLink BarItemName="cbAgTyp" RibbonStyle="SmallWithText"/>
+        <dxb:BarEditItemLink BarItemName="cbAgr" RibbonStyle="SmallWithText"/>
+        <dxb:BarEditItemLink BarItemName="cbBrig" RibbonStyle="SmallWithText"/>
+        <dxb:BarButtonItemLink BarItemName="btnStartClcGrp" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
       </dxr:RibbonPageGroup>
       <dxr:RibbonPageGroup Name="rpgQuit" AllowCollapse="False">
         <dxb:BarButtonItemLink BarItemName="btnQuitxyz" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
@@ -64,7 +106,7 @@
     </dxc:DXTabControl.View>
     <dxc:DXTabItem Header="Справочники">
       <dxl:LayoutControl x:Name="LayoutRoot1" StretchContentVertically="True" Orientation="Vertical">
-        <dxl:LayoutGroup Header="Выбрать" View="GroupBox" HorizontalAlignment="Stretch" Orientation="Vertical" ItemLabelsAlignment="Local" IsCollapsible="False" IsCollapsed="false" Padding="0,0,0,3">
+        <dxl:LayoutGroup Header="Выбрать справочник" View="GroupBox" HorizontalAlignment="Stretch" Orientation="Vertical" ItemLabelsAlignment="Local" IsCollapsible="False" IsCollapsed="false" Padding="0,0,0,3">
           <dxl:LayoutItem>
             <dxl:FlowLayoutControl Orientation="Horizontal" ItemSpace="3" Padding="0,0,0,0">
               <RadioButton Content="Группы параметров" Command="{Binding SelectTypeRefCommand}" CommandParameter="0" />
@@ -81,9 +123,16 @@
         </dxg:GridControl>
       </dxl:LayoutControl>
     </dxc:DXTabItem>
-    <dxc:DXTabItem Header="Уст">
-      <dxch:ChartControl Name="ChartSts">
-      </dxch:ChartControl>
+    <dxc:DXTabItem Header="УСТ">
+      <dxl:LayoutControl x:Name="LayoutRoot2" StretchContentVertically="True" Orientation="Vertical">
+        <dxl:LayoutGroup Header="Результаты расчета" View="GroupBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" ItemLabelsAlignment="Local" IsCollapsible="False" IsCollapsed="false" Padding="0,0,0,3">
+          <dxl:LayoutItem Label="УСТ по группе: " VerticalAlignment="Center" HorizontalAlignment="Left">
+            <dxe:TextEdit Width="130" HorizontalContentAlignment="Right" EditValue="{Binding ResUstGrp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaskType="Numeric" Mask="n2" MaskUseAsDisplayFormat="True" MaskBeepOnError="True" IsReadOnly="True"/>
+          </dxl:LayoutItem>
+        </dxl:LayoutGroup>
+        <dxch:ChartControl Name="ChartSts">
+        </dxch:ChartControl>
+      </dxl:LayoutControl>
     </dxc:DXTabItem>
   </dxc:DXTabControl>
 

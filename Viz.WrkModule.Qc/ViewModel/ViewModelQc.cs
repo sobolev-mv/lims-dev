@@ -9,7 +9,11 @@ using System;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
+using DevExpress.XtraPrinting;
 using Viz.WrkModule.Qc.Db.DataSets;
+using Microsoft.Win32;
+using System.IO;
+using Smv.Utils;
 
 
 namespace Viz.WrkModule.Qc
@@ -17,6 +21,7 @@ namespace Viz.WrkModule.Qc
   public class ViewModelQc
   {
     #region Fields
+
     private readonly UserControl usrControl;
     private readonly DsQc dsQc = new DsQc();
     private readonly DXTabControl tcMain;
@@ -37,13 +42,39 @@ namespace Viz.WrkModule.Qc
     #endregion
 
     #region Public Property
-    public virtual string ParamVld { get; set; }
+
+    public virtual string LocNum { get; set; }
+    public virtual DateTime DateFrom { get; set; }
+    public virtual DateTime DateTo { get; set; }
+    public virtual DataTable TypeUst => this.dsQc.TypeUst;
+    public virtual Int32 TypeUstId { get; set; }
+    public virtual string AgTyp { get; set; }
+    public virtual DataTable AgTypTable => this.dsQc.AgTyp;
+    public virtual string Agr { get; set; }
+    public virtual DataTable Agregate => this.dsQc.Agregate;
+    public virtual DataTable Brigade => this.dsQc.Brigade;
+    public virtual Int32 Brig { get; set; }
+    public virtual double ResUstGrp { get; set; }
+
     #endregion
 
     #region Protected Method
+    protected void OnTypeUstIdChanged()
+    {
+      //MessageBox.Show("ssss");
+    }
+
+    protected void OnAgTypChanged()
+    {
+      Agr = String.Empty;
+      this.dsQc.Agregate.LoadData(AgTyp);
+    }
+
+
     #endregion
 
     #region Private Method
+
     private void ParamItemChanged(object sender, CurrentItemChangedEventArgs args)
     {
       //btnXSamplesRowChanged.CommandParameter = (sender as DevExpress.Xpf.Grid.GridViewBase).Grid.GetRow(e.RowData.RowHandle.Value);
@@ -65,7 +96,7 @@ namespace Viz.WrkModule.Qc
 
       if ((prevMasterRowHandle >= 0) && e.RowHandle != prevMasterRowHandle)
         (sender as GridControl).CollapseMasterRow(prevMasterRowHandle);
-      
+
       gcDetail.ItemsSource = dsQc.ParamChr;
       prevMasterRowHandle = e.RowHandle;
     }
@@ -155,8 +186,8 @@ namespace Viz.WrkModule.Qc
 
       var lookUpSettings = new LookUpEditSettings
       {
-        StyleSettings = new SearchLookUpEditStyleSettings(), 
-        DisplayMember = "Name", 
+        StyleSettings = new SearchLookUpEditStyleSettings(),
+        DisplayMember = "Name",
         ValueMember = "Id",
         ItemsSource = dsQc.ParamGroup
       };
@@ -201,7 +232,7 @@ namespace Viz.WrkModule.Qc
       (gcParamChr.View as TableView).NewItemRowPosition = NewItemRowPosition.Bottom;
       (gcParamChr.View as TableView).NavigationStyle = GridViewNavigationStyle.Cell;
       (gcParamChr.View as TableView).AllowEditing = true;
-      
+
       col = new GridColumn()
       {
         FieldName = "ParamId",
@@ -272,7 +303,7 @@ namespace Viz.WrkModule.Qc
       gcParamChrOpt.View.DetailHeaderContent = "Оптимальные значения параметров";
       (gcParamChrOpt.View as TableView).ShowGroupPanel = false;
       (gcParamChrOpt.View as TableView).NewItemRowPosition = NewItemRowPosition.Bottom;
-      
+
 
       col = new GridColumn()
       {
@@ -384,7 +415,7 @@ namespace Viz.WrkModule.Qc
       };
       col.EditSettings = textSetinngs;
       gcParamLnk.Columns.Add(col);
-      
+
       //ContentDetailDescriptor contentDetail = new ContentDetailDescriptor();
       //contentDetail.ContentTemplate = (DataTemplate)FindResource("EmployeeNotes");
       //contentDetail.HeaderContent = "Notes";
@@ -451,7 +482,7 @@ namespace Viz.WrkModule.Qc
 
       gcRef.ItemsSource = dsQc.Influence;
 
-      
+
       var col = new GridColumn()
       {
         FieldName = "ParamId",
@@ -467,14 +498,14 @@ namespace Viz.WrkModule.Qc
       };
       col.EditSettings = lookUpSettings;
       gcRef.Columns.Add(col);
-      
+
 
       col = new GridColumn()
       {
         FieldName = "IndicatorId",
         Header = "Показатель качества"
       };
-      
+
       lookUpSettings = new LookUpEditSettings
       {
         StyleSettings = new SearchLookUpEditStyleSettings(),
@@ -526,16 +557,22 @@ namespace Viz.WrkModule.Qc
       dsQc.QmIndicator.LoadData();
       dsQc.Influence.LoadData();
       dsQc.Thickness.LoadData();
-      
+      dsQc.TypeUst.LoadData();
+      dsQc.AgTyp.LoadData();
+      dsQc.Brigade.LoadData();
+
       dsQc.ParamChr.TableNewRow += ParamChrNewRow;
       dsQc.ParamChrOpt.TableNewRow += ParamChrNewRow;
       dsQc.ParamLnk.TableNewRow += ParamChrNewRow;
+
+      DateFrom = DateTo = DateTime.Today;
     }
 
- 
+
     #endregion
 
     #region Command
+
     public void SelectTypeRef(Object param)
     {
       gcRef.Columns.Clear();
@@ -545,7 +582,7 @@ namespace Viz.WrkModule.Qc
 
       //(gcRef.DetailDescriptor as TabViewDetailDescriptor)?.DetailDescriptors.Clear();
       gcRef.DetailDescriptor = null;
-      
+
 
       crTypeRef = (ModuleConst.TypeReferences)Convert.ToInt32(param);
 
@@ -592,9 +629,11 @@ namespace Viz.WrkModule.Qc
           break;
       }
     }
+
     public bool CanSaveData()
     {
-      return dsQc.HasChanges(); ;
+      return dsQc.HasChanges();
+      ;
     }
 
     public void DeleteData()
@@ -606,13 +645,17 @@ namespace Viz.WrkModule.Qc
       else if ((gcFocused != null) && (crTypeRef == ModuleConst.TypeReferences.Param))
         (gcFocused.View as TableView).DeleteRow(gcFocused.View.FocusedRowHandle);
     }
+
     public bool CanDeleteData()
     {
-      if ((gcRef.View.IsFocusedView) && (gcRef.View.FocusedRowHandle >= 0) && (crTypeRef != ModuleConst.TypeReferences.Param))
+      if ((gcRef.View.IsFocusedView) && (gcRef.View.FocusedRowHandle >= 0) &&
+          (crTypeRef != ModuleConst.TypeReferences.Param))
         return true;
-      else if ((gcFocused == null) && (gcRef.View.IsFocusedView) && (gcRef.View.FocusedRowHandle >= 0) && (crTypeRef == ModuleConst.TypeReferences.Param))
+      else if ((gcFocused == null) && (gcRef.View.IsFocusedView) && (gcRef.View.FocusedRowHandle >= 0) &&
+               (crTypeRef == ModuleConst.TypeReferences.Param))
         return true;
-      else if ((gcFocused != null) && (gcFocused.View.IsFocusedView) && (gcFocused.View.FocusedRowHandle >= 0) && (crTypeRef == ModuleConst.TypeReferences.Param))
+      else if ((gcFocused != null) && (gcFocused.View.IsFocusedView) && (gcFocused.View.FocusedRowHandle >= 0) &&
+               (crTypeRef == ModuleConst.TypeReferences.Param))
         return true;
       else
         return false;
@@ -628,36 +671,39 @@ namespace Viz.WrkModule.Qc
       return true;
     }
 
-    public void ShowSts()
+    public void CalcUst4LocNum()
     {
       tcMain.SelectedIndex = 1;
       chartSts.Diagram = null;
       chartSts.Titles.Clear();
 
-      Db.Utils.CalcUst4LocNum("VLD", ParamVld);
-      dsQc.Sts.LoadData("VLD", ParamVld);
+      Db.Utils.CalcUst4LocNum("VLD", LocNum);
+      dsQc.Sts.LoadData("VLD", LocNum);
 
       if (dsQc.Sts.Rows.Count == 0)
       {
-        DXMessageBox.Show(Application.Current.Windows[0], "Данные по материалу отсутствуют.", "Нет данных", MessageBoxButton.OK, MessageBoxImage.Warning);
+        DXMessageBox.Show(Application.Current.Windows[0], "Данные по материалу отсутствуют.", "Нет данных",
+          MessageBoxButton.OK, MessageBoxImage.Warning);
         return;
       }
 
       chartSts.AnimationMode = ChartAnimationMode.OnDataChanged;
       chartSts.Titles.Add(new Title()
-        {
-          Content = "Лок. №: " + ParamVld + "  " + "УСТ: " + Db.Utils.GetUst4LocNum("VLD", ParamVld).ToString(),
-          HorizontalAlignment = HorizontalAlignment.Center
-        }
-      );
+                              {
+                                Content = "Лок. №: " + LocNum + "     " + "УСТ общее: " + Db.Utils.GetUst4LocNum("VLD", LocNum).ToString(),
+                                HorizontalAlignment = HorizontalAlignment.Center
+                              }
+                         );
 
-      chartSts.Diagram =  new XYDiagram2D();
-      chartSts.Diagram.Series.Add(new BarStackedSeries2D());
+      chartSts.Diagram = new XYDiagram2D();
+      chartSts.Diagram.Series.Add(new LineSeries2D());
       chartSts.Diagram.Series[0].Label = new SeriesLabel();
+      chartSts.Diagram.Series[0].Label.FontSize = 16;
       chartSts.Diagram.Series[0].LabelsVisibility = true;
-      ((BarStackedSeries2D)chartSts.Diagram.Series[0]).ValueScaleType = ScaleType.Numerical;
+      ((LineSeries2D)chartSts.Diagram.Series[0]).ValueScaleType = ScaleType.Numerical;
+      ((LineSeries2D)chartSts.Diagram.Series[0]).MarkerVisible = true;
 
-      ((XYDiagram2D)chartSts.Diagram).AxisY = new AxisY2D
+      ((XYDiagram2D)chartSts.Diagram).AxisY = new AxisY2D()
       {
         GridLinesVisible = true,
         GridLinesMinorVisible = true,
@@ -667,6 +713,12 @@ namespace Viz.WrkModule.Qc
       ((XYDiagram2D)chartSts.Diagram).ActualAxisY.VisualRange.MinValue = 0;
       ((XYDiagram2D)chartSts.Diagram).ActualAxisY.VisualRange.MaxValue = 1;
 
+      ((XYDiagram2D)chartSts.Diagram).AxisX = new AxisX2D()
+      {
+        GridLinesVisible = true,
+        GridLinesMinorVisible = true,
+        VisualRange = new DevExpress.Xpf.Charts.Range()
+      };
 
       chartSts.Diagram.Series[0].ValueDataMember = "RatioSts";
       chartSts.Diagram.Series[0].ArgumentDataMember = "NameGroup";
@@ -674,13 +726,64 @@ namespace Viz.WrkModule.Qc
 
     }
 
-    public bool CanShowSts()
+    public bool CanCalcUst4LocNum()
     {
-      return (!String.IsNullOrEmpty(this.ParamVld)); 
+      return (!String.IsNullOrEmpty(this.LocNum));
     }
 
+    public void ExportStsToGraphFile()
+    {
+      var sfd = new SaveFileDialog
+      {
+        OverwritePrompt = false,
+        AddExtension = true,
+        DefaultExt = ".png",
+        Filter = "png file (.png)|*.png"
+      };
+
+      if (sfd.ShowDialog().GetValueOrDefault() != true)
+        return;
+
+      if (File.Exists(sfd.FileName))
+      {
+        DxInfo.ShowDxBoxInfo("Файл", "Файл: " + sfd.FileName + " уже существует!", MessageBoxImage.Error);
+        return;
+      }
+
+      var imgExportOption = new ImageExportOptions()
+      {
+        ExportMode = ImageExportMode.SingleFile,
+        Format = System.Drawing.Imaging.ImageFormat.Png
+      };
+
+      chartSts.ExportToImage(sfd.FileName, imgExportOption);
+    }
+
+    public bool CanExportStsToGraphFile()
+    {
+      return dsQc.Sts.Rows.Count > 0;
+    }
+
+    public void CalcUstGrp()
+    {
+      
+    }
+
+    public bool CanCalcUstGrp()
+    {
+      if ((ModuleConst.TypeUstGrp)TypeUstId == ModuleConst.TypeUstGrp.WorkShop)
+        return true;
+
+      if (((ModuleConst.TypeUstGrp)TypeUstId == ModuleConst.TypeUstGrp.AgTyp) && (!String.IsNullOrEmpty(AgTyp)))
+        return true;
+
+      if (((ModuleConst.TypeUstGrp)TypeUstId == ModuleConst.TypeUstGrp.Agregate) && (!String.IsNullOrEmpty(AgTyp)) && (!String.IsNullOrEmpty(Agr)))
+        return true;
+      
+      return false; 
+    }
     #endregion
 
-
-    }
   }
+
+}
