@@ -54,17 +54,17 @@
         <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.TypeUst, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="Id" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
       </dxb:BarEditItem.EditSettings>
     </dxb:BarEditItem>
-    <dxb:BarEditItem Name="cbAgTyp" EditValue="{Binding AgTyp}"  Content="Тех.шаг:" Hint="Технологический шаг" EditWidth="150">
+    <dxb:BarEditItem Name="cbAgTyp" EditValue="{Binding AgTyp}"  Content="Тех.шаг:" Hint="Технологический шаг" EditWidth="150" IsEnabled="{Binding IsEnableCbAgTyp}">
       <dxb:BarEditItem.EditSettings>
         <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.AgTypTable, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="AgTyp" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
       </dxb:BarEditItem.EditSettings>
     </dxb:BarEditItem>
-    <dxb:BarEditItem Name="cbAgr" EditValue="{Binding Agr}"  Content="Агр-т:" Hint="Агрегат" EditWidth="150">
+    <dxb:BarEditItem Name="cbAgr" EditValue="{Binding Agr}"  Content="Агр-т:" Hint="Агрегат" EditWidth="150" IsEnabled="{Binding IsEnableCbAgr}">
       <dxb:BarEditItem.EditSettings>
         <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.Agregate, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="Agr" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
       </dxb:BarEditItem.EditSettings>
     </dxb:BarEditItem>
-    <dxb:BarEditItem Name="cbBrig" EditValue="{Binding Brig}"  Content="Бриг:" Hint="Бригада" EditWidth="150">
+    <dxb:BarEditItem Name="cbBrig" EditValue="{Binding Brig}"  Content="Бриг:" Hint="Бригада" EditWidth="150" IsEnabled="{Binding IsEnableCbBrg}">
       <dxb:BarEditItem.EditSettings>
         <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.Brigade, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="Id" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
       </dxb:BarEditItem.EditSettings>

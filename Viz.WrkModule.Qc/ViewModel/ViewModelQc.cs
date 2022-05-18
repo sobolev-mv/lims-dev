@@ -55,13 +55,29 @@ namespace Viz.WrkModule.Qc
     public virtual DataTable Brigade => this.dsQc.Brigade;
     public virtual Int32 Brig { get; set; }
     public virtual double ResUstGrp { get; set; }
-
+    public virtual Boolean IsEnableCbAgTyp { get; set; }
+    public virtual Boolean IsEnableCbAgr { get; set; }
+    public virtual Boolean IsEnableCbBrg { get; set; }
     #endregion
 
     #region Protected Method
     protected void OnTypeUstIdChanged()
     {
-      //MessageBox.Show("ssss");
+      switch ((ModuleConst.TypeUstGrp)TypeUstId)
+      {
+        case ModuleConst.TypeUstGrp.Agregate:
+          IsEnableCbAgTyp = IsEnableCbAgr = IsEnableCbBrg = true;
+          break;
+        case ModuleConst.TypeUstGrp.AgTyp:
+          IsEnableCbAgTyp = true;
+          IsEnableCbAgr = IsEnableCbBrg = false;
+          break;
+        case ModuleConst.TypeUstGrp.WorkShop:
+          IsEnableCbAgTyp = IsEnableCbAgr = IsEnableCbBrg = false;
+          break;
+        default:
+          return;
+      }
     }
 
     protected void OnAgTypChanged()
@@ -673,12 +689,13 @@ namespace Viz.WrkModule.Qc
 
     public void CalcUst4LocNum()
     {
+      ResUstGrp = 0;
       tcMain.SelectedIndex = 1;
       chartSts.Diagram = null;
       chartSts.Titles.Clear();
 
-      Db.Utils.CalcUst4LocNum("VLD", LocNum);
-      dsQc.Sts.LoadData("VLD", LocNum);
+      Db.Utils.CalcParam4LocNum(ModuleConst.CS_TypeClcParamVld, LocNum);
+      dsQc.Sts.LoadData(ModuleConst.CS_TypeClcParamVld, LocNum);
 
       if (dsQc.Sts.Rows.Count == 0)
       {
@@ -690,7 +707,7 @@ namespace Viz.WrkModule.Qc
       chartSts.AnimationMode = ChartAnimationMode.OnDataChanged;
       chartSts.Titles.Add(new Title()
                               {
-                                Content = "Лок. №: " + LocNum + "     " + "УСТ общее: " + Db.Utils.GetUst4LocNum("VLD", LocNum).ToString(),
+                                Content = "Лок. №: " + LocNum + "     " + "УСТ общее: " + Db.Utils.GetUst4LocNum(ModuleConst.CS_TypeClcParamVld, LocNum).ToString(),
                                 HorizontalAlignment = HorizontalAlignment.Center
                               }
                          );
@@ -766,7 +783,26 @@ namespace Viz.WrkModule.Qc
 
     public void CalcUstGrp()
     {
-      
+      ResUstGrp = 0;
+      tcMain.SelectedIndex = 1;
+
+      switch ((ModuleConst.TypeUstGrp)TypeUstId)
+      {
+        case ModuleConst.TypeUstGrp.Agregate:
+          Db.Utils.CalcParam4AgTypAgr(ModuleConst.CS_TypeClcParamVld, DateFrom, DateTo, AgTyp, Agr, Brig);
+          break;
+        case ModuleConst.TypeUstGrp.AgTyp:
+          Db.Utils.CalcParam4AgTypAgr(ModuleConst.CS_TypeClcParamVld, DateFrom, DateTo, AgTyp, null, 0);
+          break;
+        case ModuleConst.TypeUstGrp.WorkShop:
+          Db.Utils.CalcParam4AgTypAgr(ModuleConst.CS_TypeClcParamVld, DateFrom, DateTo, null, null, 0);
+          break;
+        default:
+          return;
+      }
+
+      ResUstGrp = Db.Utils.GetUst4AgTypAgr(ModuleConst.CS_TypeClcParamVld);
+
     }
 
     public bool CanCalcUstGrp()

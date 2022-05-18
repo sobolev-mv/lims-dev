@@ -47,6 +47,10 @@
       ShiftRptUo = 16000
     }
 
+    public const string CS_TypeClcParamVld = "VLD";
+    public const string CS_TypeClcParamOpt = "OPT";
+    
+
     public const string ScriptsFolder = "\\Scripts";
     public const string PrintLabelParamConfig = "\\Config\\PrintLabelParam.config";
 

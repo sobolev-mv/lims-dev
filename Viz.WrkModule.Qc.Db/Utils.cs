@@ -94,9 +94,9 @@ namespace Viz.WrkModule.Qc.Db
       return Convert.ToDouble(Odac.ExecuteScalar(stmtSql, CommandType.Text, false, lstPrm));
     }
 
-    public static void CalcUst4LocNum(string typeSts, string locNum)
+    public static void CalcParam4LocNum(string typeSts, string locNum)
     {
-      const string stmtSql = "VIZ_PRN.QMF_CALC.CALCMAIN";
+      const string stmtSql = "VIZ_PRN.QMF_CALC.CalcParam4LocNum";
       var lstPrm = new List<OracleParameter>();
 
       var prm = new OracleParameter
@@ -110,7 +110,6 @@ namespace Viz.WrkModule.Qc.Db
       };
       lstPrm.Add(prm);
 
-
       prm = new OracleParameter
       {
         ParameterName = "pi_TypeClc",
@@ -122,9 +121,127 @@ namespace Viz.WrkModule.Qc.Db
       };
       lstPrm.Add(prm);
 
+      Odac.ExecuteNonQuery(stmtSql, CommandType.StoredProcedure, false, lstPrm);
+    }
+
+    public static void CalcParam4AgTypAgr(string typeSts, DateTime dateFrom, DateTime dateTo, string agTyp, string agr, int brig)
+    {
+      const string stmtSql = "VIZ_PRN.QMF_CALC.CalcParam4AgTypAgr";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "pi_TypeClc",
+        DbType = DbType.String,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.VarChar,
+        Size = typeSts.Length,
+        Value = typeSts
+      };
+      lstPrm.Add(prm);
+
+      prm = new OracleParameter
+      {
+        ParameterName = "pi_DateFrom",
+        DbType = DbType.DateTime,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.Date,
+        Value = dateFrom
+      };
+      lstPrm.Add(prm);
+
+      prm = new OracleParameter
+      {
+        ParameterName = "pi_DateTo",
+        DbType = DbType.DateTime,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.Date,
+        Value = dateTo
+      };
+      lstPrm.Add(prm);
+
+      if (!String.IsNullOrEmpty(agTyp))
+      {
+        prm = new OracleParameter
+        {
+          ParameterName = "pi_AgTyp",
+          DbType = DbType.String,
+          Direction = ParameterDirection.Input,
+          OracleDbType = OracleDbType.VarChar,
+          Size = agTyp.Length,
+          Value = agTyp
+        };
+        lstPrm.Add(prm);
+      }
+
+      if ((!String.IsNullOrEmpty(agTyp)) && (!String.IsNullOrEmpty(agr)))
+      {
+        prm = new OracleParameter
+        {
+          ParameterName = "pi_Agr",
+          DbType = DbType.String,
+          Direction = ParameterDirection.Input,
+          OracleDbType = OracleDbType.VarChar,
+          Size = agr.Length,
+          Value = agr
+        };
+        lstPrm.Add(prm);
+      }
+
+      if ((!String.IsNullOrEmpty(agTyp)) && (!String.IsNullOrEmpty(agr)) && (brig > 0))
+      {
+        prm = new OracleParameter
+        {
+          ParameterName = "pi_Brig",
+          DbType = DbType.Int32,
+          Direction = ParameterDirection.Input,
+          OracleDbType = OracleDbType.Integer,
+          Value = brig
+        };
+        lstPrm.Add(prm);
+      }
 
       Odac.ExecuteNonQuery(stmtSql, CommandType.StoredProcedure, false, lstPrm);
     }
+
+    public static double GetUst4AgTypAgr(string typeSts)
+    {
+      const string stmtSql = "select RATIO_CLC from VIZ_PRN.V_QMF_STS where TYPE_CLC = :PTYPECLC";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "PTYPECLC",
+        DbType = DbType.String,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.VarChar,
+        Size = typeSts.Length,
+        Value = typeSts
+      };
+      lstPrm.Add(prm);
+
+      return Convert.ToDouble(Odac.ExecuteScalar(stmtSql, CommandType.Text, false, lstPrm));
+    }
+
+    public static double GetSts999(string typeSts)
+    {
+      const string stmtSql = "select count(*) from VIZ_PRN.QMF_CLC where TYPE_CLC = :PTYPECLC";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "PTYPECLC",
+        DbType = DbType.String,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.VarChar,
+        Size = typeSts.Length,
+        Value = typeSts
+      };
+      lstPrm.Add(prm);
+
+      return Convert.ToDouble(Odac.ExecuteScalar(stmtSql, CommandType.Text, false, lstPrm));
+    }
+
 
 
   }
