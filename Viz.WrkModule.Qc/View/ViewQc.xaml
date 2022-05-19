@@ -64,7 +64,7 @@
         <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.Agregate, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="Agr" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
       </dxb:BarEditItem.EditSettings>
     </dxb:BarEditItem>
-    <dxb:BarEditItem Name="cbBrig" EditValue="{Binding Brig}"  Content="Бриг:" Hint="Бригада" EditWidth="150" IsEnabled="{Binding IsEnableCbBrg}">
+    <dxb:BarEditItem Name="cbBrig" EditValue="{Binding Brig}" Content="Бриг:" Hint="Бригада" EditWidth="150" IsEnabled="{Binding IsEnableCbBrg}">
       <dxb:BarEditItem.EditSettings>
         <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.Brigade, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="Id" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
       </dxb:BarEditItem.EditSettings>
@@ -132,7 +132,7 @@
         <dxc:DXTabItem Header="УСТ">
           <dxl:LayoutControl x:Name="LayoutRoot2" StretchContentVertically="True" Orientation="Vertical">
             <dxl:LayoutGroup Header="Результаты расчета" View="GroupBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" ItemLabelsAlignment="Local" IsCollapsible="False" IsCollapsed="false" Padding="0,0,0,3">
-              <dxl:LayoutItem Label="УСТ по группе: " VerticalAlignment="Center" HorizontalAlignment="Left">
+              <dxl:LayoutItem Label="{Binding LabelResUstGrp}" VerticalAlignment="Center" HorizontalAlignment="Left">
                 <dxe:TextEdit Width="130" HorizontalContentAlignment="Right" EditValue="{Binding ResUstGrp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaskType="Numeric" Mask="n2" MaskUseAsDisplayFormat="True" MaskBeepOnError="True" IsReadOnly="True"/>
               </dxl:LayoutItem>
             </dxl:LayoutGroup>

@@ -16,6 +16,7 @@ using DevExpress.XtraPrinting;
 using Viz.WrkModule.Qc.Db.DataSets;
 using Microsoft.Win32;
 using System.IO;
+using System.Windows.Input;
 using Smv.Utils;
 
 
@@ -59,11 +60,13 @@ namespace Viz.WrkModule.Qc
     public virtual DataTable Agregate => this.dsQc.Agregate;
     public virtual DataTable Brigade => this.dsQc.Brigade;
     public virtual Int32 Brig { get; set; }
-    public virtual double ResUstGrp { get; set; }
+    public virtual double ?ResUstGrp { get; set; } = null;
+    public virtual string LabelResUstGrp { get; set; }
     public virtual Boolean IsEnableCbAgTyp { get; set; }
     public virtual Boolean IsEnableCbAgr { get; set; }
     public virtual Boolean IsEnableCbBrg { get; set; }
-    public virtual Boolean IsControlEnabled { get; set; }
+    public virtual Boolean IsControlEnabled { get; set; } = true;
+
     #endregion
 
     #region Protected Method
@@ -569,6 +572,8 @@ namespace Viz.WrkModule.Qc
 
     private void TaskCalcUst4LocNum(Object state)
     {
+      LabelResUstGrp = null;
+      ResUstGrp = null;
       Db.Utils.CalcParam4LocNum(ModuleConst.CS_TypeClcParamVld, LocNum);
       dsQc.Sts.LoadData(ModuleConst.CS_TypeClcParamVld, LocNum);
     }
@@ -577,7 +582,6 @@ namespace Viz.WrkModule.Qc
     {
       this.usrControl.Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)(() =>
       {
-        ResUstGrp = 0;
         tcMain.SelectedIndex = 1;
         chartSts.Diagram = null;
         chartSts.Titles.Clear();
@@ -630,14 +634,19 @@ namespace Viz.WrkModule.Qc
         chartSts.Diagram.Series[0].ArgumentDataMember = "NameGroup";
         chartSts.Diagram.Series[0].DataSource = dsQc.Sts;
 
-
+        LabelResUstGrp = "УСТ общее:";
+        ResUstGrp = Db.Utils.GetUst4LocNum(ModuleConst.CS_TypeClcParamVld, LocNum);
         EndWaitPgb();
         IsControlEnabled = true;
+        CommandManager.InvalidateRequerySuggested();
       }));
     }
 
     public void TaskCalcUstGrp(Object state)
     {
+      LabelResUstGrp = null;
+      ResUstGrp = null;
+
       switch ((ModuleConst.TypeUstGrp)TypeUstId)
       {
         case ModuleConst.TypeUstGrp.Agregate:
@@ -660,11 +669,11 @@ namespace Viz.WrkModule.Qc
     {
       this.usrControl.Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)(() =>
       {
-        ResUstGrp = 0;
         tcMain.SelectedIndex = 1;
         ResUstGrp = tmpDouble;
         EndWaitPgb();
         IsControlEnabled = true;
+        CommandManager.InvalidateRequerySuggested();
       }));
     }
 
@@ -698,7 +707,6 @@ namespace Viz.WrkModule.Qc
       dsQc.ParamLnk.TableNewRow += ParamChrNewRow;
 
       DateFrom = DateTo = DateTime.Today;
-      IsControlEnabled = true;
     }
 
 
