@@ -587,8 +587,9 @@ namespace Viz.WrkModule.Qc
 
         if (dsQc.Sts.Rows.Count == 0)
         {
-          DXMessageBox.Show(Application.Current.Windows[0], "Данные по материалу отсутствуют.", "Нет данных",
-            MessageBoxButton.OK, MessageBoxImage.Warning);
+          DXMessageBox.Show(Application.Current.Windows[0], "Данные по материалу отсутствуют.", "Нет данных", MessageBoxButton.OK, MessageBoxImage.Warning);
+          EndWaitPgb();
+          IsControlEnabled = true;
           return;
         }
 
