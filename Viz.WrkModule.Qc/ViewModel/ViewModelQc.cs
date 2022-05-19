@@ -9,6 +9,9 @@ using System;
 using System.Data;
 using System.Windows;
 using System.Windows.Controls;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 using DevExpress.XtraPrinting;
 using Viz.WrkModule.Qc.Db.DataSets;
 using Microsoft.Win32;
@@ -31,12 +34,14 @@ namespace Viz.WrkModule.Qc
     private GridControl gcParamLnk;
     private GridControl gcFocused;
     private ChartControl chartSts;
+    private readonly ProgressBarEdit pgbWait;
 
 
     private ModuleConst.TypeReferences crTypeRef;
     private DataRow paramDataRow = null;
     private int prevMasterRowHandle = -1;
     private Int64 paramIdKeyVal;
+    private double tmpDouble;
 
 
     #endregion
@@ -58,6 +63,7 @@ namespace Viz.WrkModule.Qc
     public virtual Boolean IsEnableCbAgTyp { get; set; }
     public virtual Boolean IsEnableCbAgr { get; set; }
     public virtual Boolean IsEnableCbBrg { get; set; }
+    public virtual Boolean IsControlEnabled { get; set; }
     #endregion
 
     #region Protected Method
@@ -90,7 +96,6 @@ namespace Viz.WrkModule.Qc
     #endregion
 
     #region Private Method
-
     private void ParamItemChanged(object sender, CurrentItemChangedEventArgs args)
     {
       //btnXSamplesRowChanged.CommandParameter = (sender as DevExpress.Xpf.Grid.GridViewBase).Grid.GetRow(e.RowData.RowHandle.Value);
@@ -550,8 +555,117 @@ namespace Viz.WrkModule.Qc
 
     }
 
+    /*Для выполнения операции в другом потоке*/
+    private void StartWaitPgb()
+    {
+      this.pgbWait.StyleSettings = new ProgressBarMarqueeStyleSettings();
+      (this.pgbWait.StyleSettings as ProgressBarMarqueeStyleSettings).AccelerateRatio = 10;
+    }
+
+    private void EndWaitPgb()
+    {
+      this.pgbWait.StyleSettings = new ProgressBarStyleSettings();
+    }
+
+    private void TaskCalcUst4LocNum(Object state)
+    {
+      Db.Utils.CalcParam4LocNum(ModuleConst.CS_TypeClcParamVld, LocNum);
+      dsQc.Sts.LoadData(ModuleConst.CS_TypeClcParamVld, LocNum);
+    }
+
+    private void AfterTaskEndCalcUst4LocNum(Task obj)
+    {
+      this.usrControl.Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)(() =>
+      {
+        ResUstGrp = 0;
+        tcMain.SelectedIndex = 1;
+        chartSts.Diagram = null;
+        chartSts.Titles.Clear();
+
+        //Db.Utils.CalcParam4LocNum(ModuleConst.CS_TypeClcParamVld, LocNum);
+        //dsQc.Sts.LoadData(ModuleConst.CS_TypeClcParamVld, LocNum);
+
+        if (dsQc.Sts.Rows.Count == 0)
+        {
+          DXMessageBox.Show(Application.Current.Windows[0], "Данные по материалу отсутствуют.", "Нет данных",
+            MessageBoxButton.OK, MessageBoxImage.Warning);
+          return;
+        }
+
+        chartSts.AnimationMode = ChartAnimationMode.OnDataChanged;
+        chartSts.Titles.Add(new Title()
+        {
+          Content = "Лок. №: " + LocNum + "     " + "УСТ общее: " + Db.Utils.GetUst4LocNum(ModuleConst.CS_TypeClcParamVld, LocNum).ToString(),
+          HorizontalAlignment = HorizontalAlignment.Center
+        }
+                           );
+
+        chartSts.Diagram = new XYDiagram2D();
+        chartSts.Diagram.Series.Add(new LineSeries2D());
+        chartSts.Diagram.Series[0].Label = new SeriesLabel();
+        chartSts.Diagram.Series[0].Label.FontSize = 16;
+        chartSts.Diagram.Series[0].LabelsVisibility = true;
+        ((LineSeries2D)chartSts.Diagram.Series[0]).ValueScaleType = ScaleType.Numerical;
+        ((LineSeries2D)chartSts.Diagram.Series[0]).MarkerVisible = true;
+
+        ((XYDiagram2D)chartSts.Diagram).AxisY = new AxisY2D()
+        {
+          GridLinesVisible = true,
+          GridLinesMinorVisible = true,
+          VisualRange = new DevExpress.Xpf.Charts.Range()
+        };
+
+        ((XYDiagram2D)chartSts.Diagram).ActualAxisY.VisualRange.MinValue = 0;
+        ((XYDiagram2D)chartSts.Diagram).ActualAxisY.VisualRange.MaxValue = 1;
+
+        ((XYDiagram2D)chartSts.Diagram).AxisX = new AxisX2D()
+        {
+          GridLinesVisible = true,
+          GridLinesMinorVisible = true,
+          VisualRange = new DevExpress.Xpf.Charts.Range()
+        };
+
+        chartSts.Diagram.Series[0].ValueDataMember = "RatioSts";
+        chartSts.Diagram.Series[0].ArgumentDataMember = "NameGroup";
+        chartSts.Diagram.Series[0].DataSource = dsQc.Sts;
 
 
+        EndWaitPgb();
+        IsControlEnabled = true;
+      }));
+    }
+
+    public void TaskCalcUstGrp(Object state)
+    {
+      switch ((ModuleConst.TypeUstGrp)TypeUstId)
+      {
+        case ModuleConst.TypeUstGrp.Agregate:
+          Db.Utils.CalcParam4AgTypAgr(ModuleConst.CS_TypeClcParamVld, DateFrom, DateTo, AgTyp, Agr, Brig);
+          break;
+        case ModuleConst.TypeUstGrp.AgTyp:
+          Db.Utils.CalcParam4AgTypAgr(ModuleConst.CS_TypeClcParamVld, DateFrom, DateTo, AgTyp, null, 0);
+          break;
+        case ModuleConst.TypeUstGrp.WorkShop:
+          Db.Utils.CalcParam4AgTypAgr(ModuleConst.CS_TypeClcParamVld, DateFrom, DateTo, null, null, 0);
+          break;
+        default:
+          return;
+      }
+      
+      tmpDouble = Db.Utils.GetUst4AgTypAgr(ModuleConst.CS_TypeClcParamVld);
+    }
+
+    private void AfterTaskEndCalcUstGrp(Task obj)
+    {
+      this.usrControl.Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)(() =>
+      {
+        ResUstGrp = 0;
+        tcMain.SelectedIndex = 1;
+        ResUstGrp = tmpDouble;
+        EndWaitPgb();
+        IsControlEnabled = true;
+      }));
+    }
 
     #endregion
 
@@ -568,6 +682,7 @@ namespace Viz.WrkModule.Qc
       */
 
       chartSts = LogicalTreeHelper.FindLogicalNode(control, "ChartSts") as ChartControl;
+      pgbWait = LogicalTreeHelper.FindLogicalNode(this.usrControl, "PgbWait") as ProgressBarEdit;
       dsQc.ParamGroup.LoadData();
       dsQc.Param.LoadData();
       dsQc.QmIndicator.LoadData();
@@ -582,6 +697,7 @@ namespace Viz.WrkModule.Qc
       dsQc.ParamLnk.TableNewRow += ParamChrNewRow;
 
       DateFrom = DateTo = DateTime.Today;
+      IsControlEnabled = true;
     }
 
 
@@ -619,10 +735,12 @@ namespace Viz.WrkModule.Qc
       }
     }
 
+    /*
     public bool CanShowDefectMap()
     {
       return true;
     }
+    */
 
     public void SaveData()
     {
@@ -648,7 +766,7 @@ namespace Viz.WrkModule.Qc
 
     public bool CanSaveData()
     {
-      return dsQc.HasChanges();
+      return dsQc.HasChanges() && IsControlEnabled;
       ;
     }
 
@@ -666,13 +784,13 @@ namespace Viz.WrkModule.Qc
     {
       if ((gcRef.View.IsFocusedView) && (gcRef.View.FocusedRowHandle >= 0) &&
           (crTypeRef != ModuleConst.TypeReferences.Param))
-        return true;
+        return true && IsControlEnabled;
       else if ((gcFocused == null) && (gcRef.View.IsFocusedView) && (gcRef.View.FocusedRowHandle >= 0) &&
                (crTypeRef == ModuleConst.TypeReferences.Param))
-        return true;
+        return true && IsControlEnabled;
       else if ((gcFocused != null) && (gcFocused.View.IsFocusedView) && (gcFocused.View.FocusedRowHandle >= 0) &&
                (crTypeRef == ModuleConst.TypeReferences.Param))
-        return true;
+        return true && IsControlEnabled;
       else
         return false;
     }
@@ -684,68 +802,19 @@ namespace Viz.WrkModule.Qc
 
     public bool CanReportParam()
     {
-      return true;
+      return IsControlEnabled;
     }
 
     public void CalcUst4LocNum()
     {
-      ResUstGrp = 0;
-      tcMain.SelectedIndex = 1;
-      chartSts.Diagram = null;
-      chartSts.Titles.Clear();
-
-      Db.Utils.CalcParam4LocNum(ModuleConst.CS_TypeClcParamVld, LocNum);
-      dsQc.Sts.LoadData(ModuleConst.CS_TypeClcParamVld, LocNum);
-
-      if (dsQc.Sts.Rows.Count == 0)
-      {
-        DXMessageBox.Show(Application.Current.Windows[0], "Данные по материалу отсутствуют.", "Нет данных",
-          MessageBoxButton.OK, MessageBoxImage.Warning);
-        return;
-      }
-
-      chartSts.AnimationMode = ChartAnimationMode.OnDataChanged;
-      chartSts.Titles.Add(new Title()
-                              {
-                                Content = "Лок. №: " + LocNum + "     " + "УСТ общее: " + Db.Utils.GetUst4LocNum(ModuleConst.CS_TypeClcParamVld, LocNum).ToString(),
-                                HorizontalAlignment = HorizontalAlignment.Center
-                              }
-                         );
-
-      chartSts.Diagram = new XYDiagram2D();
-      chartSts.Diagram.Series.Add(new LineSeries2D());
-      chartSts.Diagram.Series[0].Label = new SeriesLabel();
-      chartSts.Diagram.Series[0].Label.FontSize = 16;
-      chartSts.Diagram.Series[0].LabelsVisibility = true;
-      ((LineSeries2D)chartSts.Diagram.Series[0]).ValueScaleType = ScaleType.Numerical;
-      ((LineSeries2D)chartSts.Diagram.Series[0]).MarkerVisible = true;
-
-      ((XYDiagram2D)chartSts.Diagram).AxisY = new AxisY2D()
-      {
-        GridLinesVisible = true,
-        GridLinesMinorVisible = true,
-        VisualRange = new DevExpress.Xpf.Charts.Range()
-      };
-
-      ((XYDiagram2D)chartSts.Diagram).ActualAxisY.VisualRange.MinValue = 0;
-      ((XYDiagram2D)chartSts.Diagram).ActualAxisY.VisualRange.MaxValue = 1;
-
-      ((XYDiagram2D)chartSts.Diagram).AxisX = new AxisX2D()
-      {
-        GridLinesVisible = true,
-        GridLinesMinorVisible = true,
-        VisualRange = new DevExpress.Xpf.Charts.Range()
-      };
-
-      chartSts.Diagram.Series[0].ValueDataMember = "RatioSts";
-      chartSts.Diagram.Series[0].ArgumentDataMember = "NameGroup";
-      chartSts.Diagram.Series[0].DataSource = dsQc.Sts;
-
+      IsControlEnabled = false;
+      StartWaitPgb();
+      var task = Task.Factory.StartNew(TaskCalcUst4LocNum, null).ContinueWith(AfterTaskEndCalcUst4LocNum);
     }
 
     public bool CanCalcUst4LocNum()
     {
-      return (!String.IsNullOrEmpty(this.LocNum));
+      return (!String.IsNullOrEmpty(this.LocNum)) && IsControlEnabled;
     }
 
     public void ExportStsToGraphFile()
@@ -778,43 +847,26 @@ namespace Viz.WrkModule.Qc
 
     public bool CanExportStsToGraphFile()
     {
-      return dsQc.Sts.Rows.Count > 0;
+      return (dsQc.Sts.Rows.Count > 0) && IsControlEnabled;
     }
 
     public void CalcUstGrp()
     {
-      ResUstGrp = 0;
-      tcMain.SelectedIndex = 1;
-
-      switch ((ModuleConst.TypeUstGrp)TypeUstId)
-      {
-        case ModuleConst.TypeUstGrp.Agregate:
-          Db.Utils.CalcParam4AgTypAgr(ModuleConst.CS_TypeClcParamVld, DateFrom, DateTo, AgTyp, Agr, Brig);
-          break;
-        case ModuleConst.TypeUstGrp.AgTyp:
-          Db.Utils.CalcParam4AgTypAgr(ModuleConst.CS_TypeClcParamVld, DateFrom, DateTo, AgTyp, null, 0);
-          break;
-        case ModuleConst.TypeUstGrp.WorkShop:
-          Db.Utils.CalcParam4AgTypAgr(ModuleConst.CS_TypeClcParamVld, DateFrom, DateTo, null, null, 0);
-          break;
-        default:
-          return;
-      }
-
-      ResUstGrp = Db.Utils.GetUst4AgTypAgr(ModuleConst.CS_TypeClcParamVld);
-
+      IsControlEnabled = false;
+      StartWaitPgb();
+      var task = Task.Factory.StartNew(TaskCalcUstGrp, null).ContinueWith(AfterTaskEndCalcUstGrp);
     }
 
     public bool CanCalcUstGrp()
     {
       if ((ModuleConst.TypeUstGrp)TypeUstId == ModuleConst.TypeUstGrp.WorkShop)
-        return true;
+        return true && IsControlEnabled;
 
       if (((ModuleConst.TypeUstGrp)TypeUstId == ModuleConst.TypeUstGrp.AgTyp) && (!String.IsNullOrEmpty(AgTyp)))
-        return true;
+        return true && IsControlEnabled;
 
       if (((ModuleConst.TypeUstGrp)TypeUstId == ModuleConst.TypeUstGrp.Agregate) && (!String.IsNullOrEmpty(AgTyp)) && (!String.IsNullOrEmpty(Agr)))
-        return true;
+        return true && IsControlEnabled;
       
       return false; 
     }

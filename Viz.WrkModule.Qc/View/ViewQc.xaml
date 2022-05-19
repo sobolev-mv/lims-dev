@@ -100,41 +100,48 @@
       </dxr:RibbonPageGroup>
     </dxr:RibbonPage>
   </ruc:RibbonUserControl.UserPages>
-  <dxc:DXTabControl Name="tcMain">
-    <dxc:DXTabControl.View>
-      <dxc:TabControlScrollView HeaderLocation="Top"/>
-    </dxc:DXTabControl.View>
-    <dxc:DXTabItem Header="Справочники">
-      <dxl:LayoutControl x:Name="LayoutRoot1" StretchContentVertically="True" Orientation="Vertical">
-        <dxl:LayoutGroup Header="Выбрать справочник" View="GroupBox" HorizontalAlignment="Stretch" Orientation="Vertical" ItemLabelsAlignment="Local" IsCollapsible="False" IsCollapsed="false" Padding="0,0,0,3">
-          <dxl:LayoutItem>
-            <dxl:FlowLayoutControl Orientation="Horizontal" ItemSpace="3" Padding="0,0,0,0">
-              <RadioButton Content="Группы параметров" Command="{Binding SelectTypeRefCommand}" CommandParameter="0" />
-              <RadioButton Content="Параметры" Command="{Binding SelectTypeRefCommand}" CommandParameter="1" />
-              <RadioButton Content="Качеств показатели" Command="{Binding SelectTypeRefCommand}" CommandParameter="2" />
-              <RadioButton Content="Влияние" Command="{Binding SelectTypeRefCommand}" CommandParameter="3" />
-            </dxl:FlowLayoutControl>
-          </dxl:LayoutItem>
-        </dxl:LayoutGroup>
-          <dxg:GridControl Name="GcRef" ShowBorder="True" Padding="0,2,0,0" Tag="0">
-            <dxg:GridControl.View>
-            <dxg:TableView NavigationStyle="Cell" AllowEditing="True" NewItemRowPosition="Bottom" ShowGroupPanel="false" AllowGrouping="false" AutoWidth="True" ShowTotalSummary="false"  ShowGroupedColumns="True" ShowGroupFooters="True" GroupSummaryDisplayMode="AlignByColumns" UseEvenRowBackground="True" AllowMasterDetail="True"/>
-            </dxg:GridControl.View>
-        </dxg:GridControl>
-      </dxl:LayoutControl>
-    </dxc:DXTabItem>
-    <dxc:DXTabItem Header="УСТ">
-      <dxl:LayoutControl x:Name="LayoutRoot2" StretchContentVertically="True" Orientation="Vertical">
-        <dxl:LayoutGroup Header="Результаты расчета" View="GroupBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" ItemLabelsAlignment="Local" IsCollapsible="False" IsCollapsed="false" Padding="0,0,0,3">
-          <dxl:LayoutItem Label="УСТ по группе: " VerticalAlignment="Center" HorizontalAlignment="Left">
-            <dxe:TextEdit Width="130" HorizontalContentAlignment="Right" EditValue="{Binding ResUstGrp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaskType="Numeric" Mask="n2" MaskUseAsDisplayFormat="True" MaskBeepOnError="True" IsReadOnly="True"/>
-          </dxl:LayoutItem>
-        </dxl:LayoutGroup>
-        <dxch:ChartControl Name="ChartSts">
-        </dxch:ChartControl>
-      </dxl:LayoutControl>
-    </dxc:DXTabItem>
-  </dxc:DXTabControl>
+  <dxl:LayoutControl x:Name="LayoutRoot" StretchContentVertically="True" Orientation="Vertical">
+    <dxl:LayoutGroup View="Group" HorizontalAlignment="Stretch" Orientation="Horizontal">
+      <dxe:ProgressBarEdit Name="PgbWait" Orientation="Horizontal" Height="5" ShowBorder="False"/>
+    </dxl:LayoutGroup>
+    <dxl:LayoutGroup HorizontalAlignment="Stretch" Orientation="Vertical">
 
+      <dxc:DXTabControl Name="tcMain">
+        <dxc:DXTabControl.View>
+          <dxc:TabControlScrollView HeaderLocation="Top"/>
+        </dxc:DXTabControl.View>
+        <dxc:DXTabItem Header="Справочники">
+          <dxl:LayoutControl x:Name="LayoutRoot1" StretchContentVertically="True" Orientation="Vertical">
+            <dxl:LayoutGroup Header="Выбрать справочник" View="GroupBox" HorizontalAlignment="Stretch" Orientation="Vertical" ItemLabelsAlignment="Local" IsCollapsible="False" IsCollapsed="false" Padding="0,0,0,3">
+              <dxl:LayoutItem>
+                <dxl:FlowLayoutControl Orientation="Horizontal" ItemSpace="3" Padding="0,0,0,0">
+                  <RadioButton Content="Группы параметров" Command="{Binding SelectTypeRefCommand}" CommandParameter="0" />
+                  <RadioButton Content="Параметры" Command="{Binding SelectTypeRefCommand}" CommandParameter="1" />
+                  <RadioButton Content="Качеств показатели" Command="{Binding SelectTypeRefCommand}" CommandParameter="2" />
+                  <RadioButton Content="Влияние" Command="{Binding SelectTypeRefCommand}" CommandParameter="3" />
+                </dxl:FlowLayoutControl>
+              </dxl:LayoutItem>
+            </dxl:LayoutGroup>
+            <dxg:GridControl Name="GcRef" ShowBorder="True" Padding="0,2,0,0" Tag="0">
+              <dxg:GridControl.View>
+                <dxg:TableView NavigationStyle="Cell" AllowEditing="True" NewItemRowPosition="Bottom" ShowGroupPanel="false" AllowGrouping="false" AutoWidth="True" ShowTotalSummary="false"  ShowGroupedColumns="True" ShowGroupFooters="True" GroupSummaryDisplayMode="AlignByColumns" UseEvenRowBackground="True" AllowMasterDetail="True"/>
+              </dxg:GridControl.View>
+            </dxg:GridControl>
+          </dxl:LayoutControl>
+        </dxc:DXTabItem>
+        <dxc:DXTabItem Header="УСТ">
+          <dxl:LayoutControl x:Name="LayoutRoot2" StretchContentVertically="True" Orientation="Vertical">
+            <dxl:LayoutGroup Header="Результаты расчета" View="GroupBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" ItemLabelsAlignment="Local" IsCollapsible="False" IsCollapsed="false" Padding="0,0,0,3">
+              <dxl:LayoutItem Label="УСТ по группе: " VerticalAlignment="Center" HorizontalAlignment="Left">
+                <dxe:TextEdit Width="130" HorizontalContentAlignment="Right" EditValue="{Binding ResUstGrp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaskType="Numeric" Mask="n2" MaskUseAsDisplayFormat="True" MaskBeepOnError="True" IsReadOnly="True"/>
+              </dxl:LayoutItem>
+            </dxl:LayoutGroup>
+            <dxch:ChartControl Name="ChartSts">
+            </dxch:ChartControl>
+          </dxl:LayoutControl>
+        </dxc:DXTabItem>
+      </dxc:DXTabControl>
+    </dxl:LayoutGroup>
+  </dxl:LayoutControl>
 
 </ruc:RibbonUserControl>
