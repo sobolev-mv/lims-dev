@@ -61,6 +61,7 @@ namespace Viz.WrkModule.Qc
     public virtual DataTable Brigade => this.dsQc.Brigade;
     public virtual Int32 Brig { get; set; }
     public virtual double ?ResUstGrp { get; set; } = null;
+    public virtual string LabelHeaderResUstGrp { get; set; }
     public virtual string LabelResUstGrp { get; set; }
     public virtual Boolean IsEnableCbAgTyp { get; set; }
     public virtual Boolean IsEnableCbAgr { get; set; }
@@ -572,7 +573,8 @@ namespace Viz.WrkModule.Qc
 
     private void TaskCalcUst4LocNum(Object state)
     {
-      LabelResUstGrp = null;
+      dsQc.Sts.Rows.Clear();
+      LabelHeaderResUstGrp = LabelResUstGrp = null;
       ResUstGrp = null;
       Db.Utils.CalcParam4LocNum(ModuleConst.CS_TypeClcParamVld, LocNum);
       dsQc.Sts.LoadData(ModuleConst.CS_TypeClcParamVld, LocNum);
@@ -633,8 +635,8 @@ namespace Viz.WrkModule.Qc
         chartSts.Diagram.Series[0].ValueDataMember = "RatioSts";
         chartSts.Diagram.Series[0].ArgumentDataMember = "NameGroup";
         chartSts.Diagram.Series[0].DataSource = dsQc.Sts;
-
-        LabelResUstGrp = "УСТ общее:";
+        LabelHeaderResUstGrp = "УСТ общее:";
+        LabelResUstGrp = null;
         ResUstGrp = Db.Utils.GetUst4LocNum(ModuleConst.CS_TypeClcParamVld, LocNum);
         EndWaitPgb();
         IsControlEnabled = true;
@@ -644,7 +646,8 @@ namespace Viz.WrkModule.Qc
 
     public void TaskCalcUstGrp(Object state)
     {
-      LabelResUstGrp = null;
+      dsQc.Sts.Rows.Clear();
+      LabelHeaderResUstGrp = LabelResUstGrp = null;
       ResUstGrp = null;
 
       switch ((ModuleConst.TypeUstGrp)TypeUstId)
@@ -670,11 +673,33 @@ namespace Viz.WrkModule.Qc
       this.usrControl.Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)(() =>
       {
         tcMain.SelectedIndex = 1;
+        CreateLabelResUstGrp();
         ResUstGrp = tmpDouble;
         EndWaitPgb();
         IsControlEnabled = true;
         CommandManager.InvalidateRequerySuggested();
       }));
+    }
+
+    private void CreateLabelResUstGrp()
+    {
+      LabelHeaderResUstGrp = $"Расчет за период с { DateFrom: dd.MM.yyyy} по { DateTo: dd.MM.yyyy}: ";
+
+      switch ((ModuleConst.TypeUstGrp)TypeUstId)
+      {
+        case ModuleConst.TypeUstGrp.Agregate:
+          LabelResUstGrp = Db.Utils.GetNameTypeUst(TypeUstId) + " ● " +
+                           Db.Utils.GetNameAgTyp(AgTyp) + " ● " + Db.Utils.GetNameAgregate(AgTyp, Agr) +
+                           " ● " + Db.Utils.GetNameBrigade(Brig);
+          break;
+        case ModuleConst.TypeUstGrp.AgTyp:
+          LabelResUstGrp = Db.Utils.GetNameTypeUst(TypeUstId) + " ● " +
+                           Db.Utils.GetNameAgTyp(AgTyp);
+          break;
+        case ModuleConst.TypeUstGrp.WorkShop:
+          LabelResUstGrp = Db.Utils.GetNameTypeUst(TypeUstId);
+          break;
+      }
     }
 
     #endregion
@@ -861,6 +886,8 @@ namespace Viz.WrkModule.Qc
 
     public void CalcUstGrp()
     {
+      chartSts.Diagram = null;
+      chartSts.Titles.Clear();
       IsControlEnabled = false;
       StartWaitPgb();
       var task = Task.Factory.StartNew(TaskCalcUstGrp, null).ContinueWith(AfterTaskEndCalcUstGrp);

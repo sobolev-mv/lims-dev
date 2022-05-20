@@ -242,6 +242,90 @@ namespace Viz.WrkModule.Qc.Db
       return Convert.ToDouble(Odac.ExecuteScalar(stmtSql, CommandType.Text, false, lstPrm));
     }
 
+    public static string GetNameTypeUst(int id)
+    {
+      const string stmtSql = "select NAME from VIZ_PRN.QMF_TYPE_UST where ID = :PID";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "PID",
+        DbType = DbType.Int32,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.Integer,
+        Value = id
+      };
+      lstPrm.Add(prm);
+
+      return Convert.ToString(Odac.ExecuteScalar(stmtSql, CommandType.Text, false, lstPrm));
+    }
+
+    public static string GetNameAgTyp(string agTyp)
+    {
+      const string stmtSql = "select NAME from VIZ_PRN.QMF_PARAM_GROUP where AGTYP = :PAGTYP";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "PAGTYP",
+        DbType = DbType.String,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.VarChar,
+        Size = agTyp.Length,
+        Value = agTyp
+      };
+      lstPrm.Add(prm);
+
+      return Convert.ToString(Odac.ExecuteScalar(stmtSql, CommandType.Text, false, lstPrm));
+    }
+
+    public static string GetNameAgregate(string agTyp, string agr)
+    {
+      const string stmtSql = "select NAME from VIZ_PRN.QMF_AGREGATE where AGTYP = :PAGTYP  AND AGR = :PAGR";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "PAGTYP",
+        DbType = DbType.String,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.VarChar,
+        Size = agTyp.Length,
+        Value = agTyp
+      };
+      lstPrm.Add(prm);
+
+      prm = new OracleParameter
+      {
+        ParameterName = "PAGR",
+        DbType = DbType.String,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.VarChar,
+        Size = agr.Length,
+        Value = agr
+      };
+      lstPrm.Add(prm);
+
+      return Convert.ToString(Odac.ExecuteScalar(stmtSql, CommandType.Text, false, lstPrm));
+    }
+
+    public static string GetNameBrigade(int id)
+    {
+      const string stmtSql = "select NAME from VIZ_PRN.QMF_BRIGADE where ID = :PID";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "PID",
+        DbType = DbType.Int32,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.Integer,
+        Value = id
+      };
+      lstPrm.Add(prm);
+
+      return Convert.ToString(Odac.ExecuteScalar(stmtSql, CommandType.Text, false, lstPrm));
+    }
 
 
   }

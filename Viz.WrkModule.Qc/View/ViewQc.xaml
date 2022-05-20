@@ -131,9 +131,16 @@
         </dxc:DXTabItem>
         <dxc:DXTabItem Header="УСТ">
           <dxl:LayoutControl x:Name="LayoutRoot2" StretchContentVertically="True" Orientation="Vertical">
-            <dxl:LayoutGroup Header="Результаты расчета" View="GroupBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" ItemLabelsAlignment="Local" IsCollapsible="False" IsCollapsed="false" Padding="0,0,0,3">
-              <dxl:LayoutItem Label="{Binding LabelResUstGrp}" VerticalAlignment="Center" HorizontalAlignment="Left">
-                <dxe:TextEdit Width="130" HorizontalContentAlignment="Right" EditValue="{Binding ResUstGrp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaskType="Numeric" Mask="n2" MaskUseAsDisplayFormat="True" MaskBeepOnError="True" IsReadOnly="True"/>
+            <dxl:LayoutGroup Header="Результат расчета" View="GroupBox" HorizontalAlignment="Stretch" VerticalAlignment="Top" Orientation="Vertical" ItemLabelsAlignment="Local" IsCollapsible="False" IsCollapsed="false" Padding="0,0,0,3">
+              <!--dxl:LayoutItem Label="{Binding LabelResUstGrp}" VerticalAlignment="Center" HorizontalAlignment="Left">
+                <dxe:TextEdit Width="130" HorizontalContentAlignment="Right" EditValue="{Binding ResUstGrp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaskType="Numeric" Mask="n2" MaskUseAsDisplayFormat="True" MaskBeepOnError="True" IsReadOnly="True" FontFamily="Arial"/>
+              </dxl:LayoutItem-->
+              <dxl:LayoutItem>
+                <dxl:FlowLayoutControl Orientation="Horizontal" ItemSpace="3" Padding="0,0,0,0">
+                  <Label Content="{Binding LabelHeaderResUstGrp}"  FontFamily="Arial"/>
+                  <Label Content="{Binding LabelResUstGrp}"  FontFamily="Arial" FontWeight="Bold"/>
+                  <dxe:TextEdit Width="70" HorizontalContentAlignment="Right" EditValue="{Binding ResUstGrp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaskType="Numeric" Mask="n2" MaskUseAsDisplayFormat="True" MaskBeepOnError="True" IsReadOnly="True" FontFamily="Arial"/>
+                </dxl:FlowLayoutControl>
               </dxl:LayoutItem>
             </dxl:LayoutGroup>
             <dxch:ChartControl Name="ChartSts">
