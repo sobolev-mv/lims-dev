@@ -96,7 +96,7 @@ namespace Viz.WrkModule.Qc.Db
 
     public static void CalcParam4LocNum(string typeSts, string locNum)
     {
-      const string stmtSql = "VIZ_PRN.QMF_CALC.CalcParam4LocNum";
+      const string stmtSql = "VIZ_PRN.QMF_CALC_CORE.CalcParam4LocNum";
       var lstPrm = new List<OracleParameter>();
 
       var prm = new OracleParameter
@@ -126,7 +126,7 @@ namespace Viz.WrkModule.Qc.Db
 
     public static void CalcParam4AgTypAgr(string typeSts, DateTime dateFrom, DateTime dateTo, string agTyp, string agr, int brig)
     {
-      const string stmtSql = "VIZ_PRN.QMF_CALC.CalcParam4AgTypAgr";
+      const string stmtSql = "VIZ_PRN.QMF_CALC_CORE.CalcParam4AgTypAgr";
       var lstPrm = new List<OracleParameter>();
 
       var prm = new OracleParameter
