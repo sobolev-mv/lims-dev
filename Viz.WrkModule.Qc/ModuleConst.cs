@@ -28,6 +28,13 @@
       WorkShop = 30
     };
 
+    public enum TypeFqGrp
+    {
+      Coil = 1,
+      Lot = 2,
+      ListLot = 3,
+      CoilNzp = 4
+    };
 
     //Группы 1ур.
     internal enum AccL1Gr

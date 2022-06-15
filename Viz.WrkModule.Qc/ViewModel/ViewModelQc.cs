@@ -68,6 +68,16 @@ namespace Viz.WrkModule.Qc
     public virtual Boolean IsEnableCbBrg { get; set; }
     public virtual Boolean IsControlEnabled { get; set; } = true;
 
+    //Прогнозное качество
+    public virtual string ParamInFq { get; set; }
+    public virtual Int32 TypeFqId { get; set; } = (int)ModuleConst.TypeFqGrp.Coil;
+    public virtual DataTable TypeFqTable => this.dsQc.TypeFq;
+    public virtual DataTable AgTypFqTable => this.dsQc.AgTyp;
+    public virtual string AgTypFq { get; set; }
+    public virtual DataTable TypeIndFqTable => this.dsQc.TypeIndFq;
+    public virtual Int32 TypeIndFqId { get; set; }
+    public virtual Boolean IsEnableCbAgTypFq { get; set; }
+    public virtual DataTable ResultFcastTable => this.dsQc.ResultFcast;
     #endregion
 
     #region Protected Method
@@ -96,6 +106,11 @@ namespace Viz.WrkModule.Qc
       this.dsQc.Agregate.LoadData(AgTyp);
     }
 
+    protected void OnTypeFqIdChanged()
+    {
+      IsEnableCbAgTypFq = ((ModuleConst.TypeFqGrp)TypeFqId == ModuleConst.TypeFqGrp.CoilNzp);
+      AgTypFq = String.Empty;
+    }
 
     #endregion
 
@@ -702,6 +717,23 @@ namespace Viz.WrkModule.Qc
       }
     }
 
+    public void TaskCalcForecastQualityCoil(Object state)
+    {
+      Db.Utils.CalcForecastQualityCoil(ParamInFq, TypeIndFqId);
+    }
+
+    private void AfterTaskCalcForecastQualityCoil(Task obj)
+    {
+      this.usrControl.Dispatcher.Invoke(DispatcherPriority.Normal, (ThreadStart)(() =>
+      {
+        tcMain.SelectedIndex = 2;
+        EndWaitPgb();
+        IsControlEnabled = true;
+        dsQc.ResultFcast.LoadData();
+        CommandManager.InvalidateRequerySuggested();
+      }));
+    }
+    
     #endregion
 
     #region Constructor
@@ -726,6 +758,8 @@ namespace Viz.WrkModule.Qc
       dsQc.TypeUst.LoadData();
       dsQc.AgTyp.LoadData();
       dsQc.Brigade.LoadData();
+      dsQc.TypeFq.LoadData();
+      dsQc.TypeIndFq.LoadData();
 
       dsQc.ParamChr.TableNewRow += ParamChrNewRow;
       dsQc.ParamChrOpt.TableNewRow += ParamChrNewRow;
@@ -906,8 +940,38 @@ namespace Viz.WrkModule.Qc
       
       return false; 
     }
+
+    public void CalcForecastQuality()
+    {
+      tcMain.SelectedIndex = 2;
+      IsControlEnabled = false;
+      dsQc.ResultFcast.Rows.Clear();
+      StartWaitPgb();
+      
+      switch ((ModuleConst.TypeFqGrp)TypeFqId)
+      {
+        case ModuleConst.TypeFqGrp.Coil:
+          var task = Task.Factory.StartNew(TaskCalcForecastQualityCoil, null).ContinueWith(AfterTaskCalcForecastQualityCoil);
+          break;
+        case ModuleConst.TypeFqGrp.Lot:
+          
+          break;
+        case ModuleConst.TypeFqGrp.ListLot:
+          
+          break;
+        case ModuleConst.TypeFqGrp.CoilNzp:
+          
+          break;
+      }
+    }
+
+    public bool CanCalcForecastQuality()
+    {
+      return true;
+    }
+
     #endregion
 
-  }
+    }
 
-}
+  }

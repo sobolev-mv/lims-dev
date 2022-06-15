@@ -66,6 +66,15 @@
     <Compile Include="DataSets\Brigade.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DataSets\ResultFcast.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataSets\TypeIndFq.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataSets\TypeFq.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DataSets\TypeUst.cs">
       <SubType>Component</SubType>
     </Compile>

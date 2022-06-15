@@ -70,9 +70,31 @@
       </dxb:BarEditItem.EditSettings>
     </dxb:BarEditItem>
     <dxb:BarButtonItem Name="btnStartClcGrp" Content="Расч." Command="{Binding CalcUstGrpCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/Effects-32x32.png" Hint="Расчитать х-тики качества для групп." />
+    <dxb:BarEditItem Name="beiParamInFq" EditValue="{Binding ParamInFq, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Парам: " Hint="Лок №, Стенд. пратия, Список стендов. партий" EditWidth="250">
+      <dxb:BarEditItem.EditSettings>
+        <dxe:TextEditSettings TextWrapping="Wrap"/>
+      </dxb:BarEditItem.EditSettings>
+    </dxb:BarEditItem>
+    <dxb:BarEditItem Name="cbTypFq" EditValue="{Binding TypeFqId}" Content="Тип:" Hint="Тип прогноза" EditWidth="250" >
+      <dxb:BarEditItem.EditSettings>
+        <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.TypeFqTable, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="Id" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
+      </dxb:BarEditItem.EditSettings>
+    </dxb:BarEditItem>
+    <dxb:BarEditItem Name="cbIndFq" EditValue="{Binding TypeIndFqId}" Content="Показ:" Hint="Показатель качества" EditWidth="250" >
+      <dxb:BarEditItem.EditSettings>
+        <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.TypeIndFqTable, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="Id" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
+      </dxb:BarEditItem.EditSettings>
+    </dxb:BarEditItem>
+    <dxb:BarEditItem Name="cbAgTypFq" EditValue="{Binding AgTypFq}"  Content="Тех.шаг:" Hint="Технологический шаг" EditWidth="150" IsEnabled="{Binding IsEnableCbAgTypFq}">
+      <dxb:BarEditItem.EditSettings>
+        <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.AgTypFqTable, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="AgTyp" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
+      </dxb:BarEditItem.EditSettings>
+    </dxb:BarEditItem>
+    <dxb:BarButtonItem Name="btnStartClcFq" Content="Расч." Command="{Binding CalcForecastQualityCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/Effects-32x32.png" Hint="Расчитать х-тики прогнозного качества." />
+
   </ruc:RibbonUserControl.BarManagerItems>
   <ruc:RibbonUserControl.UserPages>
-    <dxr:RibbonPage Caption="Качество">
+    <dxr:RibbonPage Caption="Справочники">
       <dxr:RibbonPageGroup Name="rpgImage" AllowCollapse="False">
         <dxb:BarStaticItemLink BarItemName="siGlyxza" RibbonStyle="Large"/>
       </dxr:RibbonPageGroup>
@@ -80,6 +102,14 @@
         <dxb:BarButtonItemLink BarItemName="btnSaveData" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
         <dxb:BarButtonItemLink BarItemName="btnDeleteData" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
         <dxb:BarButtonItemLink BarItemName="btnRptParam" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
+      </dxr:RibbonPageGroup>
+      <dxr:RibbonPageGroup Name="rpgQuit" AllowCollapse="False">
+        <dxb:BarButtonItemLink BarItemName="btnQuitxyz" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
+      </dxr:RibbonPageGroup>
+    </dxr:RibbonPage>
+    <dxr:RibbonPage Caption="Уст">
+      <dxr:RibbonPageGroup AllowCollapse="False">
+        <dxb:BarStaticItemLink BarItemName="siGlyxza" RibbonStyle="Large"/>
       </dxr:RibbonPageGroup>
       <dxr:RibbonPageGroup Name="rpgUst" Caption="УСТ единицы материала" AllowCollapse="False">
         <dxb:BarEditItemLink BarItemName="beiLocNum"/>
@@ -95,7 +125,22 @@
         <dxb:BarEditItemLink BarItemName="cbBrig" RibbonStyle="SmallWithText"/>
         <dxb:BarButtonItemLink BarItemName="btnStartClcGrp" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
       </dxr:RibbonPageGroup>
-      <dxr:RibbonPageGroup Name="rpgQuit" AllowCollapse="False">
+      <dxr:RibbonPageGroup Name="rpgQuit1" AllowCollapse="False">
+        <dxb:BarButtonItemLink BarItemName="btnQuitxyz" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
+      </dxr:RibbonPageGroup>
+    </dxr:RibbonPage>
+    <dxr:RibbonPage Caption="Прогноз">
+      <dxr:RibbonPageGroup AllowCollapse="False">
+        <dxb:BarStaticItemLink BarItemName="siGlyxza" RibbonStyle="Large"/>
+      </dxr:RibbonPageGroup>
+      <dxr:RibbonPageGroup AllowCollapse="False" Caption="Прогнозное качество">
+        <dxb:BarEditItemLink BarItemName="beiParamInFq" RibbonStyle="SmallWithText"/>
+        <dxb:BarEditItemLink BarItemName="cbTypFq" RibbonStyle="SmallWithText"/>
+        <dxb:BarEditItemLink BarItemName="cbIndFq" RibbonStyle="SmallWithText"/>
+        <dxb:BarEditItemLink BarItemName="cbAgTypFq" RibbonStyle="SmallWithText"/>
+        <dxb:BarButtonItemLink BarItemName="btnStartClcFq" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
+      </dxr:RibbonPageGroup>
+        <dxr:RibbonPageGroup Name="rpgQuit2" AllowCollapse="False">
         <dxb:BarButtonItemLink BarItemName="btnQuitxyz" RibbonStyle="Large" UserGlyphSize="Large" BarItemDisplayMode="ContentAndGlyph" AllowDrop="True" />
       </dxr:RibbonPageGroup>
     </dxr:RibbonPage>
@@ -145,6 +190,27 @@
             </dxl:LayoutGroup>
             <dxch:ChartControl Name="ChartSts">
             </dxch:ChartControl>
+          </dxl:LayoutControl>
+        </dxc:DXTabItem>
+        <dxc:DXTabItem Header="Прогноз">
+          <dxl:LayoutControl x:Name="LayoutRoot3" StretchContentVertically="True" Orientation="Vertical">
+            <dxl:LayoutGroup Header="Результаты расчета" View="GroupBox" HorizontalAlignment="Stretch" Orientation="Vertical" ItemLabelsAlignment="Local" IsCollapsible="False" IsCollapsed="false" Padding="0,0,0,3">
+            </dxl:LayoutGroup>
+            <dxg:GridControl Name="GcForecast" ShowBorder="True" ItemsSource="{Binding Path=ResultFcastTable}">
+              <dxg:GridControl.View>
+                <dxg:TableView NavigationStyle="Cell" AllowEditing="False"  ShowGroupPanel="True" AllowGrouping="True" AutoWidth="True" ShowTotalSummary="True"  ShowGroupedColumns="True" ShowGroupFooters="True" GroupSummaryDisplayMode="AlignByColumns" UseEvenRowBackground="True"/>
+              </dxg:GridControl.View>
+              <dxg:GridControl.Columns>
+                <dxg:GridColumn FieldName="LocNum" Header="Лок. №" MinWidth="150" Width="150" ReadOnly="True"/>
+                <dxg:GridColumn FieldName="AnnealingLot" Header="Стенд. партия" MinWidth="100" Width="100" ReadOnly="True"/>
+                <dxg:GridColumn FieldName="AnnealingLotSeq" Header="№ в стенд. партии" MinWidth="100" Width="100" ReadOnly="True"/>
+                <dxg:GridColumn FieldName="NameInd" Header="Показатель качества" MinWidth="100" Width="100" ReadOnly="True"/>
+                <dxg:GridColumn FieldName="NameAgTyp" Header="Техн. шаг" MinWidth="100" Width="100" ReadOnly="True"/>
+                <dxg:GridColumn FieldName="LfqVal" Header="УфК" MinWidth="80" Width="80" EditSettings="{dxe:TextSettings DisplayFormat=n3}" ReadOnly="True"/>
+                <dxg:GridColumn FieldName="LhqVal" Header="УиК" MinWidth="80" Width="80" EditSettings="{dxe:TextSettings DisplayFormat=n3}" ReadOnly="True"/>
+                <dxg:GridColumn FieldName="Tou" Header="ТОУ" MinWidth="80" Width="80" EditSettings="{dxe:TextSettings DisplayFormat=n3}" ReadOnly="True"/>
+              </dxg:GridControl.Columns>
+            </dxg:GridControl>
           </dxl:LayoutControl>
         </dxc:DXTabItem>
       </dxc:DXTabControl>

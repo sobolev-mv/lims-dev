@@ -327,6 +327,36 @@ namespace Viz.WrkModule.Qc.Db
       return Convert.ToString(Odac.ExecuteScalar(stmtSql, CommandType.Text, false, lstPrm));
     }
 
+    public static void CalcForecastQualityCoil(string locNum, int indicatorId)
+    {
+      Odac.ExecuteNonQuery("delete from VIZ_PRN.QMF_RESULT_LFCASTQ", CommandType.Text, false, null);
+
+      const string stmtSql = "VIZ_PRN.QMF_CALC_FORECAST.CalcForecastQ4LocNum";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "pi_LocNum",
+        DbType = DbType.String,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.VarChar,
+        Size = locNum.Length,
+        Value = locNum
+      };
+      lstPrm.Add(prm);
+
+      prm = new OracleParameter
+      {
+        ParameterName = "pi_IndicateId",
+        DbType = DbType.Int32,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.Integer,
+        Value = indicatorId
+      };
+      lstPrm.Add(prm);
+
+      Odac.ExecuteNonQuery(stmtSql, CommandType.StoredProcedure, false, lstPrm);
+    }
 
   }
 }

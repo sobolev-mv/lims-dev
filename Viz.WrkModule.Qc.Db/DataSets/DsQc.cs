@@ -21,8 +21,12 @@ namespace Viz.WrkModule.Qc.Db.DataSets
     public AgTypDataTable AgTyp { get; private set; }
     public AgregateDataTable Agregate { get; private set; }
     public BrigadeDataTable  Brigade { get; private set; }
+    public TypeFqDataTable TypeFq { get; private set; }
+    public TypeIndFqDataTable TypeIndFq  { get; private set; }
+    public ResultFcastDataTable ResultFcast { get; private set; }
 
-    public DsQc() : base()
+
+  public DsQc() : base()
     {
       this.DataSetName = "DsQc";
 
@@ -65,6 +69,14 @@ namespace Viz.WrkModule.Qc.Db.DataSets
       this.Brigade = new BrigadeDataTable("Brigade");
       this.Tables.Add(this.Brigade);
 
+      this.TypeFq = new TypeFqDataTable("TypeFq");
+      this.Tables.Add(this.TypeFq);
+
+      this.TypeIndFq = new TypeIndFqDataTable("TypeIndFq");
+      this.Tables.Add(this.TypeIndFq);
+
+      this.ResultFcast = new ResultFcastDataTable("ResultFcast");
+      this.Tables.Add(this.ResultFcast);
 
     }
   }
