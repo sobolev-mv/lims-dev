@@ -70,7 +70,7 @@
       </dxb:BarEditItem.EditSettings>
     </dxb:BarEditItem>
     <dxb:BarButtonItem Name="btnStartClcGrp" Content="Расч." Command="{Binding CalcUstGrpCommand}" LargeGlyph="pack://application:,,,/Viz.WrkModule.Qc;Component/Images/Effects-32x32.png" Hint="Расчитать х-тики качества для групп." />
-    <dxb:BarEditItem Name="beiParamInFq" EditValue="{Binding ParamInFq, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Парам: " Hint="Лок №, Стенд. пратия, Список стендов. партий" EditWidth="250">
+    <dxb:BarEditItem Name="beiParamInFq" EditValue="{Binding ParamInFq, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Content="Парам: " Hint="Лок №, Стенд. пратия, Список стендов. партий" EditWidth="250" IsEnabled="{Binding IsEnableParamInFq}">
       <dxb:BarEditItem.EditSettings>
         <dxe:TextEditSettings TextWrapping="Wrap"/>
       </dxb:BarEditItem.EditSettings>
@@ -85,7 +85,7 @@
         <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.TypeIndFqTable, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="Id" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
       </dxb:BarEditItem.EditSettings>
     </dxb:BarEditItem>
-    <dxb:BarEditItem Name="cbAgTypFq" EditValue="{Binding AgTypFq}"  Content="Тех.шаг:" Hint="Технологический шаг" EditWidth="150" IsEnabled="{Binding IsEnableCbAgTypFq}">
+    <dxb:BarEditItem Name="cbAgTypFq" EditValue="{Binding AgTypFq}"  Content="Тех.шаг HЗП:" Hint="Технологический шаг НЗП" EditWidth="150" IsEnabled="{Binding IsEnableCbAgTypFq}">
       <dxb:BarEditItem.EditSettings>
         <dxe:ComboBoxEditSettings ItemsSource="{Binding Path=(dxb:BarEditItem.BarEditItem).DataContext.AgTypFqTable, RelativeSource={RelativeSource Self}}" DisplayMember="Name" ValueMember="AgTyp" PopupMaxHeight="250" IsTextEditable="False" TextWrapping="NoWrap" PopupMinWidth="17" />
       </dxb:BarEditItem.EditSettings>
@@ -183,7 +183,11 @@
               <dxl:LayoutItem>
                 <dxl:FlowLayoutControl Orientation="Horizontal" ItemSpace="3" Padding="0,0,0,0">
                   <Label Content="{Binding LabelHeaderResUstGrp}"  FontFamily="Arial"/>
-                  <Label Content="{Binding LabelResUstGrp}"  FontFamily="Arial" FontWeight="Bold"/>
+                  <Label Content="{Binding LabelResUstGrp}"  FontFamily="Arial" FontWeight="Bold">
+                    <Label.Foreground>
+                      <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+                    </Label.Foreground>
+                  </Label>
                   <dxe:TextEdit Width="70" HorizontalContentAlignment="Right" EditValue="{Binding ResUstGrp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaskType="Numeric" Mask="n2" MaskUseAsDisplayFormat="True" MaskBeepOnError="True" IsReadOnly="True" FontFamily="Arial"/>
                 </dxl:FlowLayoutControl>
               </dxl:LayoutItem>
@@ -195,6 +199,17 @@
         <dxc:DXTabItem Header="Прогноз">
           <dxl:LayoutControl x:Name="LayoutRoot3" StretchContentVertically="True" Orientation="Vertical">
             <dxl:LayoutGroup Header="Результаты расчета" View="GroupBox" HorizontalAlignment="Stretch" Orientation="Vertical" ItemLabelsAlignment="Local" IsCollapsible="False" IsCollapsed="false" Padding="0,0,0,3">
+              <dxl:LayoutItem>
+                <dxl:FlowLayoutControl Orientation="Horizontal" ItemSpace="3" Padding="0,0,0,0">
+                  <Label Content="{Binding LabelHeaderResForecast}"  FontFamily="Arial"/>
+                  <Label Content="{Binding LabelResForecast}"  FontFamily="Arial" FontWeight="Bold">
+                    <Label.Foreground>
+                      <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+                    </Label.Foreground>
+                  </Label>
+                  <dxe:TextEdit Width="70" HorizontalContentAlignment="Right" EditValue="{Binding ResForecast, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaskType="Numeric" Mask="n2" MaskUseAsDisplayFormat="True" MaskBeepOnError="True" IsReadOnly="True" FontFamily="Arial"/>
+                </dxl:FlowLayoutControl>
+              </dxl:LayoutItem>
             </dxl:LayoutGroup>
             <dxg:GridControl Name="GcForecast" ShowBorder="True" ItemsSource="{Binding Path=ResultFcastTable}">
               <dxg:GridControl.View>
@@ -209,6 +224,7 @@
                 <dxg:GridColumn FieldName="LfqVal" Header="УфК" MinWidth="80" Width="80" EditSettings="{dxe:TextSettings DisplayFormat=n3}" ReadOnly="True"/>
                 <dxg:GridColumn FieldName="LhqVal" Header="УиК" MinWidth="80" Width="80" EditSettings="{dxe:TextSettings DisplayFormat=n3}" ReadOnly="True"/>
                 <dxg:GridColumn FieldName="Tou" Header="ТОУ" MinWidth="80" Width="80" EditSettings="{dxe:TextSettings DisplayFormat=n3}" ReadOnly="True"/>
+                <dxg:GridColumn FieldName="CfCastQ" Header="КпК" MinWidth="80" Width="80" EditSettings="{dxe:TextSettings DisplayFormat=n3}" ReadOnly="True"/>
               </dxg:GridControl.Columns>
             </dxg:GridControl>
           </dxl:LayoutControl>

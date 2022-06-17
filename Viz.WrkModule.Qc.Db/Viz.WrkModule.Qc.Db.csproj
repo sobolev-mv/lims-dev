@@ -142,6 +142,10 @@
       <Project>{6d17ac21-b5c2-4ace-9d29-cd99c4f82286}</Project>
       <Name>Smv.Prj.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Viz.DbApp.Psi\Viz.DbApp.Psi.csproj">
+      <Project>{5e522dd5-f6a1-4b67-85d6-b182a4c69012}</Project>
+      <Name>Viz.DbApp.Psi</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

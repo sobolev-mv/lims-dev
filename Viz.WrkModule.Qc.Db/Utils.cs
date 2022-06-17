@@ -358,5 +358,130 @@ namespace Viz.WrkModule.Qc.Db
       Odac.ExecuteNonQuery(stmtSql, CommandType.StoredProcedure, false, lstPrm);
     }
 
+    public static void CalcForecastQualityAnLot(string anLot, int indicatorId)
+    {
+      Odac.ExecuteNonQuery("delete from VIZ_PRN.QMF_RESULT_LFCASTQ", CommandType.Text, false, null);
+
+      const string stmtSql = "VIZ_PRN.QMF_CALC_FORECAST.CalcForecastQ4AnLot";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "pi_AnLot",
+        DbType = DbType.String,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.VarChar,
+        Size = anLot.Length,
+        Value = anLot
+      };
+      lstPrm.Add(prm);
+
+      prm = new OracleParameter
+      {
+        ParameterName = "pi_IndicateId",
+        DbType = DbType.Int32,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.Integer,
+        Value = indicatorId
+      };
+      lstPrm.Add(prm);
+
+      Odac.ExecuteNonQuery(stmtSql, CommandType.StoredProcedure, false, lstPrm);
+    }
+
+    public static void CalcForecastQualityListAnLot(string listAnLot, int indicatorId)
+    {
+      Odac.ExecuteNonQuery("delete from VIZ_PRN.QMF_RESULT_LFCASTQ", CommandType.Text, false, null);
+      DbApp.Psi.DbVar.SetStringList(listAnLot, ",");
+
+      const string stmtSql = "VIZ_PRN.QMF_CALC_FORECAST.CalcForecastQ4ListAnLot";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "pi_IndicateId",
+        DbType = DbType.Int32,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.Integer,
+        Value = indicatorId
+      };
+      lstPrm.Add(prm);
+
+      Odac.ExecuteNonQuery(stmtSql, CommandType.StoredProcedure, false, lstPrm);
+    }
+
+    public static void CalcForecastQualityCoilsNzp(string erpLagerort, int indicatorId)
+    {
+      Odac.ExecuteNonQuery("delete from VIZ_PRN.QMF_RESULT_LFCASTQ", CommandType.Text, false, null);
+      
+
+      const string stmtSql = "VIZ_PRN.QMF_CALC_FORECAST.CalcForecastQ4Nzp";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "pi_ErpLagerort",
+        DbType = DbType.String,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.VarChar,
+        Size = erpLagerort.Length,
+        Value = erpLagerort
+      };
+      lstPrm.Add(prm);
+
+      prm = new OracleParameter
+      {
+        ParameterName = "pi_IndicateId",
+        DbType = DbType.Int32,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.Integer,
+        Value = indicatorId
+      };
+      lstPrm.Add(prm);
+
+      Odac.ExecuteNonQuery(stmtSql, CommandType.StoredProcedure, false, lstPrm);
+    }
+    public static object GetResForecast()
+    {
+      const string stmtSql = "select CFCASTQ_ALL from VIZ_PRN.V_QMF_RESULT_LFCASTQ";
+      return Odac.ExecuteScalar(stmtSql, CommandType.Text, false, null);
+    }
+
+    public static string GetNameTypeForecast(int id)
+    {
+      const string stmtSql = "select NAME from VIZ_PRN.QMF_TYPE_FQ where ID = :PID";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "PID",
+        DbType = DbType.Int32,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.Integer,
+        Value = id
+      };
+      lstPrm.Add(prm);
+
+      return Convert.ToString(Odac.ExecuteScalar(stmtSql, CommandType.Text, false, lstPrm));
+    }
+    
+    public static string GetNameTypeIndForecast(int id)
+    {
+      const string stmtSql = "select NAME from VIZ_PRN.V_QMF_TYPEIND_FQ where ID = :PID";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "PID",
+        DbType = DbType.Int32,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.Integer,
+        Value = id
+      };
+      lstPrm.Add(prm);
+
+      return Convert.ToString(Odac.ExecuteScalar(stmtSql, CommandType.Text, false, lstPrm));
+    }
+
   }
 }

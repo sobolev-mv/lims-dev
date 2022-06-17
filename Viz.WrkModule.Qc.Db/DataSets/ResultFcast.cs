@@ -44,6 +44,8 @@ namespace Viz.WrkModule.Qc.Db.DataSets
         col = new DataColumn("Tou", typeof(double), null, MappingType.Element);
         this.Columns.Add(col);
 
+        col = new DataColumn("CfCastQ", typeof(double), null, MappingType.Element);
+        this.Columns.Add(col);
 
         this.Constraints.Add(new UniqueConstraint("Pk_" + tblName, new[] { this.Columns["LocNum"] }, true));
 
@@ -57,6 +59,7 @@ namespace Viz.WrkModule.Qc.Db.DataSets
         dtm.ColumnMappings.Add("LFQ_VAL", "LfqVal");
         dtm.ColumnMappings.Add("LHQ_VAL", "LhqVal");
         dtm.ColumnMappings.Add("TOU", "Tou");
+        dtm.ColumnMappings.Add("CFCASTQ", "CfCastQ");
 
         adapter.TableMappings.Add(dtm);
 
@@ -64,7 +67,7 @@ namespace Viz.WrkModule.Qc.Db.DataSets
         adapter.SelectCommand = new OracleCommand
         {
           Connection = Odac.DbConnection,
-          CommandText = "SELECT LOCNUM, ANNEALINGLOT, ANNEALINGLOT_SEQ, NAMEIND, NAMEAGTYP, LFQ_VAL, LHQ_VAL, TOU FROM VIZ_PRN.V_QMF_RESULT_LFCASTQ ORDER BY 2",
+          CommandText = "SELECT LOCNUM, ANNEALINGLOT, ANNEALINGLOT_SEQ, NAMEIND, NAMEAGTYP, LFQ_VAL, LHQ_VAL, TOU, CFCASTQ FROM VIZ_PRN.V_QMF_RESULT_LFCASTQ ORDER BY 2, 3",
           CommandType = CommandType.Text
         };
 

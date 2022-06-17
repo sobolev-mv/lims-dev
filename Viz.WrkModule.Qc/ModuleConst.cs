@@ -33,7 +33,7 @@
       Coil = 1,
       Lot = 2,
       ListLot = 3,
-      CoilNzp = 4
+      CoilsNzp = 4
     };
 
     //Группы 1ур.

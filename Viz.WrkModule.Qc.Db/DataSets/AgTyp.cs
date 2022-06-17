@@ -51,7 +51,13 @@ namespace Viz.WrkModule.Qc.Db.DataSets
       {
         return Odac.LoadDataTable(this, adapter, true, null);
       }
-      
+
+      public int LoadData4Nzp()
+      {
+        adapter.SelectCommand.CommandText = "SELECT AGTYP, NAME FROM VIZ_PRN.V_QMF_AGTYP_NZP ORDER BY ID";
+        return Odac.LoadDataTable(this, adapter, true, null);
+      }
+
     }
     
   }

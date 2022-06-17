@@ -70,14 +70,18 @@ namespace Viz.WrkModule.Qc
 
     //Прогнозное качество
     public virtual string ParamInFq { get; set; }
+    public virtual Boolean IsEnableParamInFq { get; set; } = true;
     public virtual Int32 TypeFqId { get; set; } = (int)ModuleConst.TypeFqGrp.Coil;
     public virtual DataTable TypeFqTable => this.dsQc.TypeFq;
-    public virtual DataTable AgTypFqTable => this.dsQc.AgTyp;
-    public virtual string AgTypFq { get; set; }
+    public virtual DataTable AgTypFqTable => this.dsQc.AgTypNzp;
+    public virtual string AgTypFq { get; set; } = "0000";
     public virtual DataTable TypeIndFqTable => this.dsQc.TypeIndFq;
     public virtual Int32 TypeIndFqId { get; set; }
     public virtual Boolean IsEnableCbAgTypFq { get; set; }
     public virtual DataTable ResultFcastTable => this.dsQc.ResultFcast;
+    public virtual decimal ?ResForecast { get; set; } = null;
+    public virtual string LabelHeaderResForecast { get; set; }
+    public virtual string LabelResForecast { get; set; }
     #endregion
 
     #region Protected Method
@@ -108,8 +112,18 @@ namespace Viz.WrkModule.Qc
 
     protected void OnTypeFqIdChanged()
     {
-      IsEnableCbAgTypFq = ((ModuleConst.TypeFqGrp)TypeFqId == ModuleConst.TypeFqGrp.CoilNzp);
-      AgTypFq = String.Empty;
+      if ((ModuleConst.TypeFqGrp)TypeFqId == ModuleConst.TypeFqGrp.CoilsNzp)
+      {
+        ParamInFq = string.Empty;
+        IsEnableParamInFq = false;
+        AgTypFq = "0000";
+        IsEnableCbAgTypFq = true;
+      }
+      else
+      {
+        IsEnableParamInFq = true;
+        IsEnableCbAgTypFq = false;
+      }
     }
 
     #endregion
@@ -720,6 +734,8 @@ namespace Viz.WrkModule.Qc
     public void TaskCalcForecastQualityCoil(Object state)
     {
       Db.Utils.CalcForecastQualityCoil(ParamInFq, TypeIndFqId);
+      CreateLabelResForecast();
+      ResForecast = Db.Utils.GetResForecast() as decimal?;
     }
 
     private void AfterTaskCalcForecastQualityCoil(Task obj)
@@ -733,7 +749,39 @@ namespace Viz.WrkModule.Qc
         CommandManager.InvalidateRequerySuggested();
       }));
     }
-    
+
+    public void TaskCalcForecastQualityAnLot(Object state)
+    {
+      Db.Utils.CalcForecastQualityAnLot(ParamInFq, TypeIndFqId);
+      CreateLabelResForecast();
+      ResForecast = Db.Utils.GetResForecast() as decimal?;
+    }
+
+    public void TaskCalcForecastQualityListAnLot(Object state)
+    {
+      Db.Utils.CalcForecastQualityListAnLot(ParamInFq, TypeIndFqId);
+      CreateLabelResForecast();
+      ResForecast = Db.Utils.GetResForecast() as decimal?;
+    }
+
+    public void TaskCalcForecastQualityCoilsNzp(Object state)
+    {
+      Db.Utils.CalcForecastQualityCoilsNzp(AgTypFq, TypeIndFqId);
+      CreateLabelResForecast();
+      ResForecast = Db.Utils.GetResForecast() as decimal?;
+    }
+
+    private void CreateLabelResForecast()
+    {
+      if (((ModuleConst.TypeFqGrp) TypeFqId == ModuleConst.TypeFqGrp.Coil) ||
+         ((ModuleConst.TypeFqGrp)TypeFqId == ModuleConst.TypeFqGrp.Lot) ||
+         ((ModuleConst.TypeFqGrp)TypeFqId == ModuleConst.TypeFqGrp.ListLot))
+
+        LabelResForecast = Db.Utils.GetNameTypeForecast(TypeFqId) + " ● " + Db.Utils.GetNameTypeIndForecast(TypeIndFqId);
+      else if ((ModuleConst.TypeFqGrp)TypeFqId == ModuleConst.TypeFqGrp.CoilsNzp) ;
+
+      LabelHeaderResForecast = "КпК общий:";
+    }
     #endregion
 
     #region Constructor
@@ -760,6 +808,7 @@ namespace Viz.WrkModule.Qc
       dsQc.Brigade.LoadData();
       dsQc.TypeFq.LoadData();
       dsQc.TypeIndFq.LoadData();
+      dsQc.AgTypNzp.LoadData4Nzp();
 
       dsQc.ParamChr.TableNewRow += ParamChrNewRow;
       dsQc.ParamChrOpt.TableNewRow += ParamChrNewRow;
@@ -943,6 +992,9 @@ namespace Viz.WrkModule.Qc
 
     public void CalcForecastQuality()
     {
+      LabelHeaderResForecast = LabelResForecast = null;
+      ResForecast = null;
+
       tcMain.SelectedIndex = 2;
       IsControlEnabled = false;
       dsQc.ResultFcast.Rows.Clear();
@@ -954,13 +1006,13 @@ namespace Viz.WrkModule.Qc
           var task = Task.Factory.StartNew(TaskCalcForecastQualityCoil, null).ContinueWith(AfterTaskCalcForecastQualityCoil);
           break;
         case ModuleConst.TypeFqGrp.Lot:
-          
+          task = Task.Factory.StartNew(TaskCalcForecastQualityAnLot, null).ContinueWith(AfterTaskCalcForecastQualityCoil);
           break;
         case ModuleConst.TypeFqGrp.ListLot:
-          
+          task = Task.Factory.StartNew(TaskCalcForecastQualityListAnLot, null).ContinueWith(AfterTaskCalcForecastQualityCoil);
           break;
-        case ModuleConst.TypeFqGrp.CoilNzp:
-          
+        case ModuleConst.TypeFqGrp.CoilsNzp:
+          task = Task.Factory.StartNew(TaskCalcForecastQualityCoilsNzp, null).ContinueWith(AfterTaskCalcForecastQualityCoil);
           break;
       }
     }
