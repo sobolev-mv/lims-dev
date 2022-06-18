@@ -778,7 +778,8 @@ namespace Viz.WrkModule.Qc
          ((ModuleConst.TypeFqGrp)TypeFqId == ModuleConst.TypeFqGrp.ListLot))
 
         LabelResForecast = Db.Utils.GetNameTypeForecast(TypeFqId) + " ● " + Db.Utils.GetNameTypeIndForecast(TypeIndFqId);
-      else if ((ModuleConst.TypeFqGrp)TypeFqId == ModuleConst.TypeFqGrp.CoilsNzp) ;
+      else if ((ModuleConst.TypeFqGrp)TypeFqId == ModuleConst.TypeFqGrp.CoilsNzp)
+        LabelResForecast = Db.Utils.GetNameTypeForecast(TypeFqId) + " ● " + Db.Utils.GetNameTypeIndForecast(TypeIndFqId) + " ● " + Db.Utils.GetNameAgTypForecast(AgTypFq);
 
       LabelHeaderResForecast = "КпК общий:";
     }

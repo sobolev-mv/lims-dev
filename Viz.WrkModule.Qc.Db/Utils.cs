@@ -483,5 +483,24 @@ namespace Viz.WrkModule.Qc.Db
       return Convert.ToString(Odac.ExecuteScalar(stmtSql, CommandType.Text, false, lstPrm));
     }
 
+    public static string GetNameAgTypForecast(string agTypForecast)
+    {
+      const string stmtSql = "select NAME from VIZ_PRN.V_QMF_AGTYP_NZP where AGTYP = :PAGTYP";
+      var lstPrm = new List<OracleParameter>();
+
+      var prm = new OracleParameter
+      {
+        ParameterName = "PAGTYP",
+        DbType = DbType.String,
+        Direction = ParameterDirection.Input,
+        OracleDbType = OracleDbType.VarChar,
+        Size = agTypForecast.Length,
+        Value = agTypForecast
+      };
+      lstPrm.Add(prm);
+
+      return Convert.ToString(Odac.ExecuteScalar(stmtSql, CommandType.Text, false, lstPrm));
+    }
+
   }
 }
